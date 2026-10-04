@@ -1,0 +1,36 @@
+.wrap { display: flex; flex-direction: column; gap: 14px; }
+.toolbar { display: flex; justify-content: flex-end; }
+.chart { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; }
+.yAxis { position: relative; height: 220px; min-width: 52px; }
+.tick { position: absolute; right: 0; transform: translateY(50%); font-size: 11px; color: var(--gf-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.plot { position: relative; height: 220px; border-bottom: 1px solid var(--gf-border); }
+.gridLine { position: absolute; left: 0; right: 0; height: 1px; background: var(--gf-border-soft); }
+.columns { position: absolute; inset: 0; display: flex; align-items: stretch; }
+.slot { position: relative; flex: 1 1 0; display: flex; align-items: flex-end; justify-content: center; min-width: 0; padding: 0; border: 0; background: none; cursor: default; }
+.slot:focus-visible { outline: 2px solid var(--gf-focus); outline-offset: -2px; border-radius: 6px; }
+.slot:hover, .slot:focus-visible { background: rgba(38, 119, 68, .04); }
+/* <=24px wide, 4px rounded data end, square at the baseline. */
+.bar { width: min(24px, 62%); border-radius: 4px 4px 0 0; background: var(--gf-accent); transition: background .12s; }
+.slot:hover .bar, .slot:focus-visible .bar { background: var(--gf-accent-hover); }
+.tooltip { position: absolute; z-index: 2; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--gf-border); border-radius: 10px; background: var(--gf-surface); box-shadow: 0 10px 24px -10px rgba(27, 48, 34, .25); white-space: nowrap; pointer-events: none; text-align: left; }
+.tooltipStart { left: 0; transform: none; }
+.tooltipEnd { left: auto; right: 0; transform: none; }
+.tooltip strong { font-size: 13px; font-weight: 650; color: var(--gf-ink); font-variant-numeric: tabular-nums; }
+.tooltip span { font-size: 11.5px; color: var(--gf-muted); }
+.xAxis { grid-column: 2; display: flex; margin-top: 8px; }
+.xLabel { flex: 1 1 0; min-width: 0; text-align: center; font-size: 11px; color: var(--gf-muted); white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.current { color: var(--gf-ink); font-weight: 600; }
+.empty { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; color: var(--gf-muted); pointer-events: none; }
+.empty span { padding: 6px 12px; border-radius: 8px; background: var(--gf-header); }
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { padding: 9px 12px; text-align: left; font-size: 12px; font-weight: 600; color: var(--gf-muted); background: var(--gf-surface-2); border-bottom: 1px solid var(--gf-border-soft); }
+.table td { padding: 9px 12px; border-bottom: 1px solid var(--gf-border-soft); color: var(--gf-text); }
+.table td:last-child, .table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.tableWrap { max-height: 280px; overflow: auto; border: 1px solid var(--gf-border-soft); border-radius: 10px; }
+@media (max-width: 639px) {
+  /* Every third date, always including the current one, so labels never collide. */
+  .dense .xLabel { overflow: visible; }
+  .dense .xLabel:not([data-keep]) { visibility: hidden; }
+  .yAxis, .plot { height: 180px; }
+  .yAxis { min-width: 40px; }
+}

@@ -1,0 +1,9 @@
+# Also covered by the root .gitignore; repeated here in case the backend is ever pushed on its own.
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+*.log
+coverage/

@@ -1,0 +1,109 @@
+/* Personal management themes. The provider removes the attribute on leaving the workspace. */
+:root[data-admin-theme="light"] {
+  color-scheme: light;
+  --gf-ink: #1b3022;
+  --gf-text: #24392b;
+  --gf-text-2: #59665d;
+  --gf-muted: #748078;
+  --gf-faint: #9ba397;
+  --gf-solid: #1b3022;
+  --gf-solid-hover: #2c4933;
+  --gf-on-solid: #fff;
+  --gf-solid-icon: #d3e9b8;
+  --gf-accent: #267744;
+  --gf-accent-hover: #39784a;
+  --gf-accent-soft: #edf4e9;
+  --gf-success-bg: #edf7ef;
+  --gf-focus: #078342;
+  --gf-border: #e5e9e5;
+  --gf-border-soft: #edf0ec;
+  --gf-border-strong: #b6c8b6;
+  --gf-border-hover: #a7bfae;
+  --gf-page: #f7f8f5;
+  --gf-surface: #fff;
+  --gf-header: rgba(255, 255, 255, .94);
+  --gf-surface-2: #f7f9f6;
+  --gf-row-hover: #fafbf9;
+  --gf-skeleton: #eef1ec;
+  --gf-switch-track: #d6ddd6;
+  --gf-overlay: rgba(27, 48, 34, .32);
+  --gf-warning: #936619;
+  --gf-warning-strong: #f59e0b;
+  --gf-warning-bg: #fff6e7;
+  --gf-warning-bg-soft: #fffbf3;
+  --gf-warning-border: #f3e3c3;
+  --gf-danger: #aa4141;
+  --gf-danger-fill: #aa4141;
+  --gf-danger-strong: #8f3535;
+  --gf-danger-bg: #fceeee;
+  --gf-danger-bg-soft: #fff7f5;
+  --gf-danger-border: #f0d8d4;
+  --gf-info: #1d4ed8;
+  --gf-info-bg: #eff6ff;
+  --gf-deal: #ea580c;
+  --gf-deal-bg: #fff1e6;
+  --gf-checker: #f3f5f1;
+}
+
+:root[data-admin-theme="dark"] {
+  color-scheme: dark;
+  --gf-ink: #e6eee7;
+  --gf-text: #dce6dd;
+  --gf-text-2: #b5c4b8;
+  --gf-muted: #98ab9d;
+  --gf-faint: #829588;
+  --gf-solid: #326b48;
+  --gf-solid-hover: #3d7c54;
+  --gf-on-solid: #fff;
+  --gf-solid-icon: #d3e9b8;
+  --gf-accent: #8dcc9e;
+  --gf-accent-hover: #a2deb0;
+  --gf-accent-soft: #263c2d;
+  --gf-success-bg: #233c2b;
+  --gf-focus: #8dcc9e;
+  --gf-border: #35423a;
+  --gf-border-soft: #2b3730;
+  --gf-border-strong: #5d7665;
+  --gf-border-hover: #688570;
+  --gf-page: #141c17;
+  --gf-surface: #1c2720;
+  --gf-header: rgba(28, 39, 32, .94);
+  --gf-surface-2: #222e26;
+  --gf-row-hover: #28372d;
+  --gf-skeleton: #34443a;
+  --gf-switch-track: #526558;
+  --gf-overlay: rgba(0, 0, 0, .6);
+  --gf-warning: #e9c27e;
+  --gf-warning-strong: #f59e0b;
+  --gf-warning-bg: #3c321f;
+  --gf-warning-bg-soft: #302a1e;
+  --gf-warning-border: #615033;
+  --gf-danger: #eda09a;
+  --gf-danger-fill: #a93f40;
+  --gf-danger-strong: #bd4b4b;
+  --gf-danger-bg: #402928;
+  --gf-danger-bg-soft: #332423;
+  --gf-danger-border: #68423e;
+  --gf-info: #a6c3ff;
+  --gf-info-bg: #26334a;
+  --gf-deal: #ffb784;
+  --gf-deal-bg: #3d2d22;
+  --gf-checker: #2a382e;
+}
+
+:root[data-admin-theme] body { background: var(--gf-page); }
+:root[data-admin-theme] ::-webkit-scrollbar-track { background: var(--gf-page); }
+:root[data-admin-theme] ::-webkit-scrollbar-thumb { background: var(--gf-border-strong); }
+
+/* Toasts are rendered through a portal outside the workspace. */
+:root[data-admin-theme] .gf-toast { background: var(--gf-surface); border-color: var(--gf-border); }
+:root[data-admin-theme] .gf-toast[data-toast-type="success"] { --toast-accent: var(--gf-accent); --toast-tint: var(--gf-success-bg); }
+:root[data-admin-theme] .gf-toast[data-toast-type="error"] { --toast-accent: var(--gf-danger); --toast-tint: var(--gf-danger-bg); }
+:root[data-admin-theme] .gf-toast[data-toast-type="warning"] { --toast-accent: var(--gf-warning); --toast-tint: var(--gf-warning-bg); }
+:root[data-admin-theme] .gf-toast[data-toast-type="info"] { --toast-accent: var(--gf-info); --toast-tint: var(--gf-info-bg); }
+:root[data-admin-theme] .gf-toast > span:first-child { background: var(--toast-accent); }
+:root[data-admin-theme] .gf-toast > span:nth-child(2) { background: var(--toast-tint); color: var(--toast-accent); }
+:root[data-admin-theme] .gf-toast p { color: var(--gf-text); }
+:root[data-admin-theme] .gf-toast p + p,
+:root[data-admin-theme] .gf-toast button { color: var(--gf-muted); }
+:root[data-admin-theme] .gf-toast button:hover { background: var(--gf-surface-2); color: var(--gf-text); }

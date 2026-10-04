@@ -1,0 +1,70 @@
+/* The adminTheme.css palette is inherited from the workspace theme. */
+.shell {
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  min-height: 100vh;
+  min-height: 100svh;
+  /* Paints the sidebar column full height, even past the sticky sidebar on long pages. */
+  background: linear-gradient(to right, var(--gf-surface) 0 251px, var(--gf-border) 251px 252px, var(--gf-page) 252px);
+  color: var(--gf-text);
+}
+.main { display: flex; flex-direction: column; min-width: 0; }
+.content { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 1360px; margin: 0 auto; padding: 24px 32px 56px; box-sizing: border-box; }
+
+/* ---------- Sidebar ---------- */
+.sidebar { position: sticky; top: 0; z-index: 50; display: flex; flex-direction: column; height: 100vh; height: 100svh; background: var(--gf-surface); border-right: 1px solid var(--gf-border); }
+.brandRow { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 68px; padding: 0 18px; border-bottom: 1px solid var(--gf-border-soft); flex-shrink: 0; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--gf-ink); text-decoration: none; font-size: 18px; font-weight: 700; line-height: 1.1; }
+.brand strong { color: var(--gf-focus); }
+.brandIcon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--gf-solid); color: var(--gf-solid-icon); }
+.brandLabel { display: block; margin-top: 4px; color: var(--gf-muted); font-size: 9px; font-weight: 600; letter-spacing: 1.8px; }
+.closeButton { display: none; }
+/* contain: reaching the end of the sidebar list doesn't start scrolling or bouncing the page behind it. */
+.nav { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 14px 12px; scrollbar-width: thin; }
+.section + .section { margin-top: 18px; }
+.sectionTitle { margin: 0 0 6px; padding: 0 10px; font-size: 10.5px; font-weight: 650; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gf-faint); }
+.link { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 9px; color: var(--gf-text-2); font-size: 13px; font-weight: 500; text-decoration: none; transition: background .12s, color .12s; }
+.link svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--gf-muted); }
+.link:hover { background: var(--gf-surface-2); color: var(--gf-ink); }
+.active, .active:hover { background: var(--gf-solid); color: var(--gf-on-solid); }
+.active svg { color: var(--gf-solid-icon); }
+.linkLabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.linkBadge { min-width: 20px; height: 18px; padding: 0 6px; border-radius: 999px; background: var(--gf-warning-bg); color: var(--gf-warning); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; font-variant-numeric: tabular-nums; }
+.active .linkBadge { background: rgba(255, 255, 255, .16); color: #fff; }
+.sidebarFooter { padding: 12px; border-top: 1px solid var(--gf-border-soft); flex-shrink: 0; }
+.storeLink { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 10px; border-radius: 9px; color: var(--gf-text-2); font-size: 12.5px; font-weight: 500; text-decoration: none; }
+.storeLink:hover { background: var(--gf-surface-2); color: var(--gf-ink); }
+.storeLink svg { width: 15px; height: 15px; }
+.scrim { display: none; }
+.link:focus-visible, .brand:focus-visible, .storeLink:focus-visible { outline: 2px solid var(--gf-focus); outline-offset: 2px; }
+
+/* ---------- Tablet & mobile: the sidebar becomes a drawer ---------- */
+@media (max-width: 1023px) {
+  .shell { grid-template-columns: minmax(0, 1fr); background: var(--gf-page); }
+  .sidebar { position: fixed; inset: 0 auto 0 0; width: min(280px, 86vw); transform: translateX(-100%); visibility: hidden; transition: transform .2s ease, visibility 0s linear .2s; box-shadow: 0 0 40px rgba(27, 48, 34, .18); }
+  .sidebarOpen { transform: none; visibility: visible; transition: transform .2s ease; }
+  .closeButton { display: inline-grid; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 45; border: 0; padding: 0; background: var(--gf-overlay); }
+  .content { padding: 20px 20px 48px; gap: 20px; }
+}
+@media (max-width: 479px) {
+  .content { padding: 16px 16px 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .sidebarOpen { transition: none; }
+}
+
+/* Session check on refresh: a loader centred in the visible content area (below the 68px header). */
+.contentLoading { display: grid; place-items: center; min-height: calc(100dvh - 68px - 80px); }
+@media (max-width: 767px) { .contentLoading { min-height: calc(100dvh - 60px - 56px); } }
+
+.collapseButton { border: 0; background: transparent; cursor: pointer; width: 100%; margin-bottom: 8px; }
+@media (min-width: 1024px) {
+  .collapsed { grid-template-columns: 76px minmax(0, 1fr); background: linear-gradient(to right, var(--gf-surface) 0 75px, var(--gf-border) 75px 76px, var(--gf-page) 76px); }
+  .collapsed .brandRow { padding: 0 20px; }
+  .collapsed .brand > span:last-child, .collapsed .linkLabel, .collapsed .sectionTitle, .collapsed .linkBadge, .collapsed .collapseButton span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .collapsed .link { justify-content: center; padding-left: 10px; padding-right: 10px; }
+  .collapsed .section { margin-top: 14px; }
+  .collapsed .storeLink { justify-content: center; font-size: 0; gap: 0; }
+}
+@media (max-width: 1023px) { .collapseButton { display: none; } }

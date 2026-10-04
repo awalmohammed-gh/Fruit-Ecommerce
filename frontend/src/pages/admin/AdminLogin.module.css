@@ -1,0 +1,52 @@
+.page { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; background: #f7f8f5; color: #1b3022; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 28px 40px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: #1b3022; text-decoration: none; font-size: 23px; font-weight: 600; letter-spacing: -0.8px; }
+.brand strong { color: #39784a; font-weight: 750; }
+.brandMark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #1b3022; color: #d3e9b8; }
+.back { display: inline-flex; align-items: center; gap: 8px; color: #6b746e; font-size: 13px; text-decoration: none; }
+.back:hover { color: #1b3022; }
+.main { flex: 1; display: grid; place-items: center; padding: 30px 20px 72px; }
+.container { width: 100%; max-width: 440px; }
+.card { background: #fff; border: 1px solid #e1e7df; border-radius: 24px; padding: 36px; box-shadow: 0 16px 48px -24px rgba(27,48,34,.16), 0 2px 6px rgba(27,48,34,.025); }
+.intro { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 25px; }
+.icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: #edf4e9; color: #39784a; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: #f6f8f4; border: 1px solid #e5ebe1; border-radius: 20px; font-size: 11px; font-weight: 500; color: #5d715f; }
+.eyebrow { margin: 0 0 8px; font-size: 11px; font-weight: 650; letter-spacing: 1.6px; text-transform: uppercase; color: #66816a; }
+.title { margin: 0; font-size: 30px; line-height: 1.2; font-weight: 650; letter-spacing: -1px; }
+.subtitle { margin: 10px 0 0; font-size: 14px; line-height: 1.6; color: #788079; }
+.form { margin-top: 28px; display: flex; flex-direction: column; gap: 20px; }
+.label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 550; color: #354b3a; }
+.inputWrap { position: relative; }
+.inputIcon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); width: 18px; height: 18px; color: #8b978d; pointer-events: none; }
+.input { display: block; box-sizing: border-box; width: 100%; height: 50px; border: 1px solid #dfe5dd; border-radius: 10px; background: #fafbf9; padding: 0 14px 0 44px; font: inherit; font-size: 14px; color: #1b3022; transition: border-color .2s, box-shadow .2s, background .2s; }
+.input::placeholder { color: #a0a8a0; }
+.input:hover { border-color: #b6c8b6; }
+.input:focus { outline: none; border-color: #668c68; background: white; box-shadow: 0 0 0 3px #edf4e9; }
+.input[aria-invalid="true"] { border-color: #d76b62; }
+.input:disabled { opacity: .6; }
+.passwordInput { padding-right: 48px; }
+.toggle { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #8b978d; cursor: pointer; }
+.toggle:hover { color: #1b3022; background: #edf4e9; }
+.capsLock { margin: 8px 0 0; color: #916d26; font-size: 12px; }
+.error { margin: 0; padding: 12px 14px; border: 1px solid #f0d8d4; border-radius: 10px; background: #fff7f5; color: #ae443c; font-size: 13px; line-height: 1.5; }
+.submit { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 50px; margin-top: 4px; border: 0; border-radius: 10px; background: #1b3022; color: white; font: inherit; font-size: 14px; font-weight: 550; box-shadow: 0 4px 10px rgba(27,48,34,.1); cursor: pointer; }
+.submit:hover { background: #2c4933; }
+.submit:disabled { opacity: .65; cursor: wait; }
+.submit svg { width: 16px; height: 16px; }
+.cardFooter { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 26px; padding-top: 22px; border-top: 1px solid #eff2ec; color: #90998f; font-size: 11px; }
+.support { margin: 22px 0 0; text-align: center; font-size: 12px; line-height: 1.6; color: #889187; }
+.support a { color: #4d6953; font-weight: 500; text-decoration: none; }
+.support a:hover { text-decoration: underline; }
+.footer { padding: 20px; text-align: center; color: #9ba397; font-size: 11px; }
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 520px) {
+  .header { padding: 22px 20px; }
+  .brand { font-size: 21px; }
+  .brandMark { width: 30px; height: 30px; }
+  .back { font-size: 12px; }
+  .main { padding: 20px 16px 40px; }
+  .card { padding: 28px 24px; border-radius: 20px; }
+  .title { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .input { transition: none; } }

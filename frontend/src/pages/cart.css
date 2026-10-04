@@ -1,0 +1,71 @@
+/* Explicit tracks keep the summary out of the product list's layout. */
+.basket-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: start;
+}
+
+.basket-items,
+.basket-summary {
+  min-width: 0;
+}
+
+.basket-summary {
+  width: 100%;
+  position: static;
+}
+
+.basket-column-headings,
+.basket-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px 110px;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.basket-column-headings {
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+
+.basket-item-actions {
+  display: contents;
+}
+
+.basket-item-row h2 {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  .basket-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 24px;
+  }
+
+  .basket-column-headings {
+    display: none;
+  }
+
+  .basket-item-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .basket-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .basket-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .basket-item-row {
+    padding: 16px;
+  }
+}

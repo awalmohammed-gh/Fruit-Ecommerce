@@ -1,0 +1,95 @@
+/* The Good Value Edit: a market offers board, with a perforated price ticket. */
+.offers-page { max-width:1280px;margin:0 auto;padding:26px 32px 0;color:#263b2a }
+.offers-breadcrumb { display:flex;align-items:center;gap:8px;color:#707769;font-size:12px }
+.offers-hero { display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:36px;padding:35px 0 45px;min-height:480px }
+.offers-eyebrow { display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.17em;color:#926141;margin-bottom:18px }
+.offers-hero h1 { font-family:var(--font-serif);font-size:clamp(42px,5vw,67px);line-height:1.07;letter-spacing:-.035em;font-weight:400 }
+.offers-hero h1 em { font-weight:400;color:#a94e28 }
+.offers-description { font-size:14px;line-height:1.85;color:#6f7566;margin:22px 0 26px }
+.offers-primary { display:inline-flex;align-items:center;gap:17px;border-radius:8px;background:#2f4a34;color:#fffdf7;padding:14px 21px;font-size:13px;font-weight:500 }
+.offers-primary:hover { background:#405b3b }
+.offers-hero-footnote { display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-size:10px;color:#717763;margin-top:23px }
+.offers-hero-footnote strong { font-weight:500;color:#4e6242 }
+.offers-small-dot { width:5px;height:5px;border-radius:50%;background:#758958 }
+.offers-note-divider { width:1px;height:11px;background:#d6d9ca;margin:0 3px }
+.offers-feature { position:relative;isolation:isolate;min-height:410px;display:flex;align-items:center;justify-content:center }
+.offers-feature-orbit { position:absolute;width:95%;height:80%;border-radius:50%;background:#f1e2c6;transform:rotate(-12deg);z-index:-1;top:9% }
+.offers-feature-caption { position:absolute;top:0;left:12%;font-family:var(--font-serif);font-size:14px;font-style:italic;color:#737d62;transform:rotate(-5deg) }
+.offers-ticket { position:relative;width:280px;border-radius:12px;background:#fffdf7;border:1px solid #e5ddc9;box-shadow:0 14px 30px #4c47200b;transform:rotate(4deg);margin-top:20px }
+.offers-ticket-heading { display:flex;align-items:center;justify-content:space-between;padding:15px 19px 0;color:#6d7c5b;font-size:9px;font-weight:600;letter-spacing:.15em }
+.offers-feature-image { display:block;position:relative;height:190px;padding:15px 38px }
+.offers-feature-image img { height:100%;width:100%;object-fit:contain }
+.offers-discount-stamp { position:absolute;right:-27px;top:19px;background:#b1532e;color:#fff9ed;border:5px double #e8b08d;width:82px;height:82px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg) }
+.offers-discount-stamp strong { font-size:24px;letter-spacing:-.04em;line-height:1.1 }
+.offers-discount-stamp>span { font-size:9px;letter-spacing:.2em;margin-top:3px }
+.offers-ticket-tear { position:relative;border-top:1px dashed #d5d4bf;margin:0 14px }
+.offers-ticket-tear::before,.offers-ticket-tear::after { content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#f1e2c6;top:-8px }
+.offers-ticket-tear::before { left:-23px }.offers-ticket-tear::after { right:-23px }
+.offers-ticket-body { padding:16px 20px 19px }
+.offers-ticket-unit { font-size:10px;color:#707664;margin-bottom:4px }
+.offers-ticket-body h2 { font-family:var(--font-serif);font-size:21px;line-height:1.25 }
+.offers-ticket-price { display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-top:13px }
+.offers-ticket-price strong { font-size:23px;font-weight:650;letter-spacing:-.02em }
+.offers-ticket-price del { color:#737868;font-size:12px }
+.offers-ticket-link { display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e7e5d6;margin-top:15px;padding-top:12px;font-size:11px;font-weight:500;color:#4a6542 }
+.offers-saving-note { position:absolute;bottom:12px;left:0;font-family:var(--font-serif);font-style:italic;font-size:19px;line-height:1.1;transform:rotate(-7deg);color:#7c6341 }
+.offers-saving-note small { font-family:var(--font-sans);font-style:normal;font-size:9px;color:#747660 }
+.offers-value-strip { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;padding:19px 0;border-top:1px solid #dedfce;border-bottom:1px solid #dedfce;font-size:11px;color:#6d7662 }
+.offers-value-strip p { display:flex;align-items:center;gap:9px }
+.offers-value-strip strong { font-weight:550;color:#40583a }
+.offers-value-strip a { display:flex;align-items:center;gap:9px;font-weight:500;color:#40583a }
+.offers-selection { margin-top:44px;scroll-margin-top:140px }
+.offers-selection-heading { display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:25px }
+.offers-selection-heading .offers-eyebrow { margin-bottom:9px;font-size:9px }
+.offers-selection h2 { font-family:var(--font-serif);font-size:34px;letter-spacing:-.02em;line-height:1.15 }
+.offers-sort { display:flex;align-items:center;gap:8px;position:relative;font-size:12px }
+.offers-sort label { font-size:11px;color:#707664 }
+.offers-sort select { appearance:none;background:transparent;padding:10px 22px 10px 0;color:#40583a;font-size:12px;max-width:170px }
+.offers-sort>svg { position:absolute;right:0;pointer-events:none }
+.offers-tabs { display:flex;gap:6px;border-bottom:1px solid #dedfce;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#cbd0ba transparent }
+.offers-tabs button { display:flex;align-items:center;gap:7px;white-space:nowrap;min-height:46px;border-bottom:2px solid transparent;padding:0 14px 13px;font-size:12px;color:#6f7765 }
+.offers-tabs button:first-child { padding-left:0;padding-right:16px }
+.offers-tabs button[aria-pressed="true"] { color:#304a32;border-bottom-color:#b35b31;font-weight:550 }
+.offers-tabs button>span { font-size:9px;background:#eaeadd;border-radius:5px;padding:2px 5px;color:#687356 }
+.offers-tabs button:hover { color:#a6532d }
+.offers-results { display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:20px 0;font-size:11px;color:#6c7561 }
+.offers-results strong { color:#304a32;font-weight:550 }
+.offers-results>span { font-size:10px;color:#737868 }
+.offers-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 20px }
+.offers-product { display:flex;flex-direction:column;min-width:0 }
+.offers-product article { flex:1;box-shadow:none;border-color:#e4e2d4;border-radius:13px }
+.offers-product article>a { background:#f2f0e5 }
+.offers-product-saving { display:flex;align-items:center;justify-content:center;gap:5px;font-size:10px;color:#7d5838;padding:9px 3px 0 }
+.offers-product-saving strong { font-weight:550 }
+.offers-empty { text-align:center;padding:60px 20px;background:#f0f0e3;border-radius:16px }
+.offers-empty>svg { margin:0 auto;color:#75845f }
+.offers-empty h3 { font-family:var(--font-serif);font-size:27px;margin:17px 0 12px }
+.offers-empty p { font-size:13px;color:#707664;line-height:1.7 }
+.offers-empty button,.offers-empty a { display:inline-flex;align-items:center;gap:9px;background:#304a32;color:white;padding:12px 20px;border-radius:8px;font-size:12px;margin-top:23px }
+.offers-more { margin-top:45px;background:#e9eddf;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;padding:29px 34px;border-radius:14px }
+.offers-more .offers-eyebrow { color:#657754;font-size:9px;margin-bottom:8px }
+.offers-more h2 { font-family:var(--font-serif);font-size:28px }
+.offers-more p { font-size:12px;color:#69785b;margin-top:8px }
+.offers-more>a { display:inline-flex;align-items:center;gap:14px;font-size:12px;background:#304a32;color:white;border-radius:8px;padding:13px 20px }
+.offers-footer-note { font-size:10px;text-align:center;line-height:1.7;color:#737868;margin:24px 0 0 }
+@media(max-width:1023px) {
+.offers-page { padding:24px 24px 0 }.offers-hero { gap:15px;min-height:430px }.offers-ticket { width:245px }.offers-feature-image { height:170px }.offers-feature { min-height:385px }
+.offers-saving-note { left:-8px;font-size:16px }.offers-feature-caption { font-size:12px }.offers-grid { grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 14px }
+.offers-value-strip p:nth-child(2) { display:none }
+}
+@media(max-width:639px) {
+.offers-page { padding:20px 16px 0 }.offers-hero { grid-template-columns:1fr;gap:20px;padding-top:28px;padding-bottom:30px }
+.offers-hero h1 { font-size:43px }.offers-eyebrow { font-size:9px }.offers-description { font-size:13px;margin:17px 0 22px }
+.offers-primary { min-height:44px }.offers-hero-footnote { margin-top:19px }
+.offers-feature { min-height:370px;margin-top:9px;max-width:360px;width:100%;justify-self:center }
+.offers-ticket { width:240px }.offers-feature-orbit { width:92%;height:80%;left:4% }
+.offers-saving-note { left:0;bottom:-3px }.offers-feature-caption { left:9%;font-size:12px }
+.offers-value-strip { padding:16px 0;font-size:10px }.offers-value-strip a { font-size:11px }
+.offers-selection { margin-top:32px }.offers-selection h2 { font-size:29px }.offers-selection-heading { gap:12px;margin-bottom:14px }
+.offers-sort { margin-left:auto }.offers-sort select { font-size:11px }.offers-tabs { margin:0 -16px;padding:0 16px }
+.offers-tabs button { font-size:11px }.offers-results { padding:16px 0 }.offers-results>span { font-size:9px }
+.offers-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 10px }
+.offers-product article>div>div:last-child { flex-wrap:wrap;row-gap:10px }
+.offers-product-saving { font-size:9px;flex-wrap:wrap }.offers-more { padding:24px;margin-top:32px }.offers-more h2 { font-size:25px }.offers-footer-note { padding:0 10px }
+}
+@media(prefers-reduced-motion:reduce) { .offers-page * { transition:none!important } }

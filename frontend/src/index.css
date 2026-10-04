@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=DM+Serif+Display:ital@0;1&display=swap");
+@import "tailwindcss";
+
+@theme {
+    --color-app-green: #1b3022;
+    --color-app-green-light: #2d4a35;
+    --color-app-green-lighter: #3d6b4a;
+    --color-app-orange: #f97316;
+    --color-app-orange-dark: #ea580c;
+    --color-app-cream: #faf7f2;
+    --color-app-cream-dark: #f0ebe3;
+    --color-app-text: #1b3022;
+    --color-app-text-light: #6b7280;
+    --color-app-border: #e5e7eb;
+    --color-app-success: #22c55e;
+    --color-app-error: #ef4444;
+    --color-app-warning: #f59e0b;
+
+    --font-sans: "Outfit", sans-serif;
+    --font-serif: "DM Serif Display", serif;
+}
+
+/* Stop the browser's elastic overscroll, which lets the page be dragged past its top and bottom
+   and shows the body colour behind it. The page itself already ends exactly at the footer. */
+html,
+body {
+    overscroll-behavior-y: none;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--color-app-text);
+    background-color: var(--color-app-cream);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-app-cream);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-app-green-lighter);
+    border-radius: 3px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Smooth transitions globally */
+a,
+button {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+input:focus {
+    outline: none;
+}
+
+/* Keep keyboard navigation visible across the storefront. */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--color-app-orange-dark);
+    outline-offset: 4px;
+}
+
+.flex-center {
+    @apply flex items-center justify-center;
+}
+
+.dropdown-link {
+    @apply flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-500 hover:bg-orange-50/80 hover:text-zinc-900 transition-colors;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-soft {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slide-in-up {
+    animation: slideInUp 0.4s ease-out forwards;
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Toasts: a short slide and fade. Phones slide down from the top, larger screens in from the right. */
+@keyframes gfToastIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes gfToastOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-8px); } }
+@keyframes gfToastInSide { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes gfToastOutSide { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(16px); } }
+.gf-toast { animation: gfToastIn 180ms ease-out; }
+.gf-toast-leave { animation: gfToastOut 180ms ease-in forwards; }
+@media (min-width: 640px) {
+    .gf-toast { animation-name: gfToastInSide; }
+    .gf-toast-leave { animation-name: gfToastOutSide; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .gf-toast, .gf-toast-leave { animation-duration: 1ms; }
+}

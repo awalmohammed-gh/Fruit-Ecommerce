@@ -1,0 +1,55 @@
+.header { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 20px; height: 68px; padding: 0 32px; background: var(--gf-header); backdrop-filter: saturate(1.4) blur(8px); border-bottom: 1px solid var(--gf-border); }
+.menuButton { display: none; margin-left: -6px; }
+
+.breadcrumb { min-width: 0; }
+.breadcrumb ol { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 13px; white-space: nowrap; }
+.crumb { color: var(--gf-muted); }
+.crumb a { color: inherit; text-decoration: none; }
+.crumb a:hover { color: var(--gf-ink); text-decoration: underline; }
+.crumbSeparator { display: flex; color: var(--gf-faint); }
+.crumbCurrent { overflow: hidden; text-overflow: ellipsis; font-size: 15px; font-weight: 600; color: var(--gf-ink); }
+
+.search { position: relative; flex: 0 1 320px; margin-left: auto; }
+.search svg { position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); color: var(--gf-faint); pointer-events: none; }
+.search input { width: 100%; height: 38px; box-sizing: border-box; padding: 0 12px 0 36px; border: 1px solid var(--gf-border); border-radius: 10px; background: var(--gf-surface-2); font: inherit; font-size: 13px; color: var(--gf-ink); }
+.search input::placeholder { color: var(--gf-faint); }
+.search input:focus { outline: none; background: var(--gf-surface); border-color: var(--gf-focus); box-shadow: 0 0 0 3px var(--gf-accent-soft); }
+
+.account { position: relative; flex-shrink: 0; }
+.accountButton { display: flex; align-items: center; gap: 10px; list-style: none; cursor: pointer; border-radius: 10px; padding: 6px 8px 6px 6px; }
+.accountButton::-webkit-details-marker { display: none; }
+.accountButton:hover { background: var(--gf-surface-2); }
+.avatar { display: grid; place-items: center; flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--gf-solid); color: var(--gf-on-solid); font-size: 14px; font-weight: 600; }
+.accountText { display: flex; flex-direction: column; gap: 2px; max-width: 160px; }
+.accountText strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--gf-text); }
+.accountText span { font-size: 11px; color: var(--gf-muted); }
+.chevron { color: var(--gf-muted); transition: transform .15s; }
+.account[open] .chevron { transform: rotate(180deg); }
+.dropdown { position: absolute; right: 0; top: calc(100% + 10px); width: 260px; max-width: calc(100vw - 32px); border: 1px solid var(--gf-border); border-radius: 14px; background: var(--gf-surface); padding: 6px; box-shadow: 0 14px 36px -12px rgba(27, 48, 34, .22); }
+.identity { display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 14px; margin-bottom: 4px; border-bottom: 1px solid var(--gf-border-soft); overflow-wrap: anywhere; }
+.identity strong { font-size: 13px; color: var(--gf-text); }
+.identity > span:last-child { font-size: 12px; color: var(--gf-muted); }
+.access { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; color: var(--gf-accent); font-size: 11px; font-weight: 600; }
+.dropdownAction { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px; background: transparent; border: 0; border-radius: 8px; color: var(--gf-text); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.dropdownAction svg { color: var(--gf-muted); }
+.dropdownAction:hover { background: var(--gf-surface-2); }
+.dropdownAction:disabled { cursor: wait; opacity: .6; }
+.dropdownDivider { height: 1px; margin: 4px; background: var(--gf-border-soft); }
+.signOut { color: var(--gf-danger); }
+.signOut svg { color: var(--gf-danger); }
+.signOut:hover { background: var(--gf-danger-bg); }
+.accountButton:focus-visible, .dropdownAction:focus-visible, .crumb a:focus-visible { outline: 2px solid var(--gf-focus); outline-offset: 2px; }
+
+@media (max-width: 1023px) {
+  .header { padding: 0 20px; gap: 12px; }
+  .menuButton { display: inline-grid; }
+}
+@media (max-width: 767px) {
+  .search, .accountText, .crumb, .crumbSeparator { display: none; }
+  .account { margin-left: auto; }
+}
+@media (max-width: 479px) {
+  .header { padding: 0 16px; height: 60px; }
+}
+
+.avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
