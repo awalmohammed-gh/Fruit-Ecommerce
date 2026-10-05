@@ -430,3 +430,44 @@ test("existing image uploads validate files and supply the same public category 
   assert.equal(publicCategory.image, hostedUrl);
   await admin.delete(`/api/categories/${category._id}`).set(header).expect(200);
 });
+
+test("favicons upload as PNG, JPG, WebP or ICO up to 1 MB, save with the search settings, and only the admin can change them", async (context) => {
+  const hostedUrl = "https://example.com/cloudinary/favicon.ico";
+  const folders: unknown[] = [];
+  context.mock.method(cloudinary, "config", () => ({ cloud_name: "test-only" }));
+  context.mock.method(cloudinary.uploader, "upload_stream", (...args: unknown[]) => {
+    folders.push((args[0] as { folder: string }).folder);
+    const done = args.at(-1) as (error: null, result: { secure_url: string }) => void;
+    return new Writable({
+      write(_chunk, _encoding, callback) { callback(); },
+      final(callback) { done(null, { secure_url: hostedUrl }); callback(); },
+    });
+  });
+  const icon = (contentType: string, size = 64) => ({ filename: "favicon", contentType, size });
+  const send = (agent: typeof admin, folder: string, file: ReturnType<typeof icon>) =>
+    agent.post(`/api/admin/uploads/image?folder=${folder}`).set(header).attach("image", Buffer.alloc(file.size, 1), { filename: file.filename, contentType: file.contentType });
+
+  // Shoppers can neither upload nor save one.
+  await send(shopper, "favicon", icon("image/png")).expect(401);
+  for (const type of ["image/x-icon", "image/vnd.microsoft.icon", "image/png", "image/jpeg", "image/webp"]) {
+    assert.equal((await send(admin, "favicon", icon(type)).expect(201)).body.url, hostedUrl);
+  }
+  assert.ok(folders.every((folder) => folder === "greenfarm/favicon"));
+  await send(admin, "favicon", icon("image/svg+xml")).expect(400);
+  await send(admin, "favicon", icon("image/png", 1024 * 1024 + 1)).expect(400);
+  // .ico is for favicons only.
+  await send(admin, "products", icon("image/x-icon")).expect(400);
+
+  const { content } = (await admin.get("/api/admin/content").expect(200)).body;
+  assert.equal(content.seo.favicon, "");
+  await shopper.put("/api/admin/content/seo").set(header).send({ ...content.seo, favicon: hostedUrl }).expect(401);
+  await request(app).put("/api/admin/content/seo").set(header).send({ ...content.seo, favicon: hostedUrl }).expect(401);
+  await admin.put("/api/admin/content/seo").set(header).send({ ...content.seo, favicon: hostedUrl }).expect(200);
+  assert.equal((await request(app).get("/api/content").expect(200)).body.seo.favicon, hostedUrl);
+  // A rejected save keeps the current favicon.
+  await admin.put("/api/admin/content/seo").set(header).send({ ...content.seo, favicon: "http://example.com/icon.png" }).expect(400);
+  await admin.put("/api/admin/content/seo").set(header).send({ ...content.seo, favicon: "javascript:alert(1)" }).expect(400);
+  assert.equal((await request(app).get("/api/content").expect(200)).body.seo.favicon, hostedUrl);
+  await admin.put("/api/admin/content/seo").set(header).send(content.seo).expect(200);
+  assert.equal((await request(app).get("/api/content").expect(200)).body.seo.favicon, "");
+});

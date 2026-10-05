@@ -26,9 +26,10 @@ export const customersApi = {
   },
 };
 
+export type UploadFolder = "products" | "content" | "favicon";
 export const uploadsApi = {
-  // "content" keeps hero and banner pictures apart from product photos.
-  image: (file: File, folder: "products" | "content" = "products") => {
+  // "content" keeps hero and banner pictures apart from product photos; "favicon" also accepts .ico files.
+  image: (file: File, folder: UploadFolder = "products") => {
     const body = new FormData();
     body.append("image", file);
     return apiRequest<{ url: string }>(`/admin/uploads/image?folder=${folder}`, { method: "POST", body });

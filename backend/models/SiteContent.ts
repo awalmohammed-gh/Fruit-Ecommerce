@@ -70,6 +70,8 @@ const schema = new mongoose.Schema({
     defaultTitle: { type: String, trim: true, default: SEO_DEFAULTS.defaultTitle, maxlength: 70 },
     defaultDescription: { type: String, trim: true, default: SEO_DEFAULTS.defaultDescription, maxlength: 160 },
     socialImage: { type: String, trim: true, default: SEO_DEFAULTS.socialImage, maxlength: 2048 },
+    // The browser tab icon. Empty: the storefront's built-in /favicon.svg.
+    favicon: { type: String, trim: true, default: '', maxlength: 2048 },
   },
 }, { timestamps: true, toJSON: { versionKey: false } });
 

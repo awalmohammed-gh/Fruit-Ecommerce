@@ -152,6 +152,7 @@ export function seo(value: unknown) {
     defaultTitle: text(body, 'defaultTitle', { required: true, max: 70 }),
     defaultDescription: text(body, 'defaultDescription', { required: true, max: 160 }),
     socialImage: image(body, 'socialImage', 'Sharing image'),
+    favicon: image(body, 'favicon', 'Favicon'),
   };
 }
 

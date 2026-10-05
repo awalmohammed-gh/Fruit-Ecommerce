@@ -42,6 +42,7 @@ import DeliveryDetail from "./pages/delivery/DeliveryDetail";
 import DeliveryProfile from "./pages/delivery/DeliveryProfile";
 import NotFound from "./pages/NotFound";
 import SeoManager from "./components/seo/SeoManager";
+import FaviconManager from "./components/seo/FaviconManager";
 
 const App = () => {
   return (
@@ -50,6 +51,8 @@ const App = () => {
       <Toaster />
       {/* Title, description, canonical, sharing tags and structured data for the current address */}
       <SeoManager />
+      {/* The favicon saved in Admin → Settings, on every page */}
+      <FaviconManager />
 
       <Routes>
         {/* Authentication no navbar and footer*/}

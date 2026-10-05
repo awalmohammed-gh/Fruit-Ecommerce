@@ -13,7 +13,8 @@ export interface SectionHeading { eyebrow: string; heading: string; description:
 export interface StoreInfo { description: string; address: string; phone: string; email: string }
 export interface Announcement { active: boolean; message: string; secondary: string }
 export interface HomeSections { features: { title: string; description: string }[]; categories: SectionHeading; popular: SectionHeading }
-export interface SeoSettings { siteName: string; defaultTitle: string; defaultDescription: string; socialImage: string }
+// favicon: empty for the built-in /favicon.svg.
+export interface SeoSettings { siteName: string; defaultTitle: string; defaultDescription: string; socialImage: string; favicon: string }
 export interface HeroSettings { mode: "single" | "slider"; autoplaySeconds: number; single: HeroSlide; slides: HeroSlide[] }
 
 /** The admin's full copy, inactive parts included. */
