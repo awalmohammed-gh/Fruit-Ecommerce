@@ -44,3 +44,6 @@ artifacts/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Vercel CLI link and local build output
+.vercel/
