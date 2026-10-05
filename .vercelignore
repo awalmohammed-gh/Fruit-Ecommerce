@@ -1,0 +1,21 @@
+# The Vercel CLI uploads everything not listed here (it ignores .gitignore). Settings come from the
+# project's environment variables on Vercel, never from local .env files.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Rebuilt on Vercel, or local only
+node_modules
+dist
+*.tsbuildinfo
+artifacts
+coverage
+.vscode
+*.log
