@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { UploadApiResponse } from "cloudinary";
+import { uploadImage } from "../services/images.js";
 import cloudinary from "../config/cloudinary.js";
 import { HttpError } from "../middleware/errors.js";
 
@@ -23,17 +23,7 @@ export const uploadController = {
       if (!faviconTypes.has(file.mimetype)) throw new HttpError(400, "Upload a PNG, JPG, WebP or ICO image");
       if (file.size > FAVICON_MAX_BYTES) throw new HttpError(400, "A favicon must be 1 MB or smaller");
     } else if (!imageTypes.has(file.mimetype)) throw new HttpError(400, "Upload a JPG, PNG or WebP image");
-    let result: UploadApiResponse;
-    try {
-      result = await new Promise<UploadApiResponse>((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: FOLDERS[folder], resource_type: "image" }, (error, uploaded) =>
-            error || !uploaded ? reject(error ?? new Error("Upload failed")) : resolve(uploaded))
-          .end(file.buffer);
-      });
-    } catch {
-      throw new HttpError(502, "The image could not be uploaded. Please try again.");
-    }
+    const result = await uploadImage(file.buffer, { folder: FOLDERS[folder] });
     res.status(201).json({ message: "Image uploaded", url: result.secure_url });
   },
 };

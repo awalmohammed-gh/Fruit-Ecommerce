@@ -11,6 +11,7 @@ import { productsApi, type ProductQuery } from "../frontApisRoute/products";
 import { useResource } from "../hooks/useResource";
 import { useStoreCategories } from "../hooks/useStoreCategories";
 import "./market.css";
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 
 const PAGE_SIZE = 12;
 const filterKeys = ["category", "minPrice", "maxPrice", "organic", "inStock"] as const;
@@ -32,11 +33,13 @@ function toQuery(params: URLSearchParams, page = Math.max(1, Number(params.get("
 const invalidBudget = (params: URLSearchParams) => Boolean(params.get("minPrice") && params.get("maxPrice") && Number(params.get("minPrice")) > Number(params.get("maxPrice")));
 
 const Products = () => {
+  const { user } = useCustomerAuth();
   const [searchParams] = useSearchParams();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const params = new URLSearchParams(searchParams);
   if (slug) params.set("category", slug);
+  if (!params.has('sort') && user?.preferences?.productSort) params.set('sort', user.preferences.productSort);
   const category = params.get("category") || "";
   const applyParams = (next: URLSearchParams) => {
     const updated = new URLSearchParams(next);
@@ -210,7 +213,7 @@ const Products = () => {
             <button type="button" aria-pressed={params.get("organic") === "true"} onClick={() => updateFilter("organic", params.get("organic") === "true" ? "" : "true")} className={`market-filter-button ${params.get("organic") === "true" ? "active" : ""}`}><Leaf size={15} aria-hidden="true" />Organic{params.get("organic") === "true" && <Check size={13} aria-hidden="true" />}</button>
             <button type="button" aria-pressed={params.get("inStock") === "true"} onClick={() => updateFilter("inStock", params.get("inStock") === "true" ? "" : "true")} className={`market-filter-button ${params.get("inStock") === "true" ? "active" : ""}`}><PackageCheck size={15} aria-hidden="true" />In stock{params.get("inStock") === "true" && <Check size={13} aria-hidden="true" />}</button>
           </div>
-          <div className="market-sort"><label htmlFor="market-sort">Sort by</label><select id="market-sort" value={params.get("sort") || ""} onChange={(event) => updateFilter("sort", event.target.value)}><option value="">Newest arrivals</option><option value="rating">Highest rated</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="name">Name: A to Z</option></select><ChevronDown size={14} aria-hidden="true" /></div>
+          <div className="market-sort"><label htmlFor="market-sort">Sort by</label><select id="market-sort" value={params.get("sort") || "newest"} onChange={(event) => updateFilter("sort", event.target.value)}><option value="newest">Newest arrivals</option><option value="rating">Highest rated</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="name">Name: A to Z</option></select><ChevronDown size={14} aria-hidden="true" /></div>
         </div>
         <div className="market-results-meta">
           <p role="status" aria-live="polite">{(!results.loading && results.data) || badBudget ? <><strong>{total}</strong> {total === 1 ? "good thing" : "good things"} to choose from{total > PAGE_SIZE && <span> · Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)}</span>}</> : "Loading the market…"}</p>

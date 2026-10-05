@@ -57,7 +57,7 @@ const Navbar = () => {
 
   return (
     <nav ref={navRef} className="sticky top-0 z-40 bg-white border-b border-app-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-3 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-2 sm:gap-3 lg:gap-8">
         {/* Hamburger (tablet & mobile) */}
         <button
           type="button"
@@ -69,7 +69,7 @@ const Navbar = () => {
           {mobileMenuOpen ? <XIcon className="size-5" /> : <MenuIcon className="size-5" />}
         </button>
 
-        <Link to={"/"} onClick={closeMobileMenu} className="text-[22px] font-semibold shrink-0">
+        <Link to={"/"} onClick={closeMobileMenu} className="text-[20px] sm:text-[22px] font-semibold shrink-0">
           Green<span className="font-bold text-green-700">Farm</span>
         </Link>
 
@@ -98,7 +98,7 @@ const Navbar = () => {
 
         {/* Right side */}
         <div className="flex items-center gap-2 sm:gap-3 ml-auto md:ml-0 shrink-0">
-          {user && !authLoading && <NotificationBell key={user._id} account="customer" ownerId={user._id} />}
+          {user && !authLoading && <NotificationBell key={`${user._id}:${JSON.stringify(user.preferences?.notifications)}`} account="customer" ownerId={user._id} />}
           <Link
             to="/cart"
             onClick={() => { closeMobileMenu(); window.scrollTo(0, 0); }}

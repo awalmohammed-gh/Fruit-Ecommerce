@@ -74,7 +74,7 @@ export function createApp(overrides: Partial<AppConfig> = {}) {
       origin: true,
       credentials: true,
       methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'X-GreenFarm-Request', 'Idempotency-Key', 'X-Cart-Owner', 'X-Notification-Owner'],
+      allowedHeaders: ['Content-Type', 'X-GreenFarm-Request', 'Idempotency-Key', 'X-Cart-Owner', 'X-Notification-Owner', 'X-Profile-Owner'],
       maxAge: 600,
     });
   }));

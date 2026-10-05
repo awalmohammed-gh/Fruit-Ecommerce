@@ -5,7 +5,7 @@ import type { AccountType } from '../models/Session.js';
 import type { OrderDocument } from '../models/Order.js';
 import { HttpError } from '../middleware/errors.js';
 
-export interface NotificationIdentity { accountType: AccountType; accountId: string }
+export interface NotificationIdentity { accountType: AccountType; accountId: string; mutedTypes?: string[] }
 export interface NotificationInput {
   audience: 'individual' | 'customers' | 'all';
   recipient?: string;
@@ -43,6 +43,7 @@ export async function createNotification(input: NotificationInput, session?: Cli
 export function visibleNotifications(identity: NotificationIdentity): QueryFilter<NotificationDocument> {
   return {
     expiresAt: { $gt: new Date() },
+    ...(identity.mutedTypes?.length && { type: { $nin: identity.mutedTypes } }),
     $or: [
       { audience: 'individual', recipientAccount: identity.accountType, recipient: identity.accountId },
       { audience: { $in: identity.accountType === 'customer' ? ['customers', 'all'] : ['all'] } },

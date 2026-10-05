@@ -24,7 +24,14 @@ function number(req: Request, key: string, fallback: number, max = Number.MAX_SA
 const publicFields = { _id: 1, title: 1, message: 1, type: 1, link: 1, createdAt: 1, expiresAt: 1, sequence: 1, readAt: 1, isRead: { $ne: ['$readAt', null] } };
 
 export function notificationController(accountType: AccountType) {
-  const identity = (req: Request) => notificationIdentity(req, accountType);
+  const identity = (req: Request): NotificationIdentity => {
+    const owner = notificationIdentity(req, accountType);
+    const preferences = accountType === 'customer' ? req.user.preferences?.notifications : undefined;
+    const mutedTypes: string[] = [];
+    if (preferences?.order === false) mutedTypes.push('order', 'payment');
+    for (const key of ['account', 'promotion', 'system'] as const) if (preferences?.[key] === false) mutedTypes.push(key);
+    return { ...owner, mutedTypes };
+  };
   const allowed = async (req: Request) => {
     const notification = await Notification.findOne({ ...visibleNotifications(identity(req)), _id: id(req.params.id, 'Notification ID') });
     if (!notification) throw new HttpError(404, 'Notification not found');
@@ -72,7 +79,7 @@ export function notificationController(accountType: AccountType) {
     read: async (req: Request, res: Response) => {
       const notification = await allowed(req);
       const owner = identity(req);
-      await NotificationReceipt.updateOne({ notification: notification._id, ...owner }, {
+      await NotificationReceipt.updateOne({ notification: notification._id, accountType: owner.accountType, accountId: owner.accountId }, {
         $set: { readAt: new Date() }, $setOnInsert: { expiresAt: notification.expiresAt },
       }, { upsert: true });
       await reply(req, res);
@@ -85,14 +92,15 @@ export function notificationController(accountType: AccountType) {
       const notifications = await Notification.find({ ...visibleNotifications(owner), _id: { $in: ids } }).select('_id expiresAt');
       const now = new Date();
       if (notifications.length) await NotificationReceipt.bulkWrite(notifications.map((notification) => ({ updateOne: {
-        filter: { notification: notification._id, ...owner },
+        filter: { notification: notification._id, accountType: owner.accountType, accountId: owner.accountId },
         update: { $set: { readAt: now }, $setOnInsert: { expiresAt: notification.expiresAt } }, upsert: true,
       } })));
       await reply(req, res);
     },
     dismiss: async (req: Request, res: Response) => {
       const notification = await allowed(req);
-      await NotificationReceipt.updateOne({ notification: notification._id, ...identity(req) }, {
+      const owner = identity(req);
+      await NotificationReceipt.updateOne({ notification: notification._id, accountType: owner.accountType, accountId: owner.accountId }, {
         $set: { dismissedAt: new Date(), readAt: new Date() }, $setOnInsert: { expiresAt: notification.expiresAt },
       }, { upsert: true });
       await reply(req, res);

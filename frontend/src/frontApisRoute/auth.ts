@@ -1,10 +1,15 @@
 import { apiRequest } from "./client";
+export interface CustomerPreferences {
+  productSort: 'newest' | 'rating' | 'price_asc' | 'price_desc' | 'name';
+  notifications: { order: boolean; account: boolean; promotion: boolean; system: boolean };
+}
 export interface AuthUser {
   _id: string;
   fullName: string;
   email: string;
   phone: string;
   avatar: string;
+  preferences: CustomerPreferences;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -17,7 +22,7 @@ export interface RegisterInput {
 }
 // The admin comes from the backend .env, not the users collection, and has its own session.
 export interface AdminAccount { _id: string; fullName: string; email: string; phone: string; avatar: string; isActive: boolean; lastLoginAt: string | null; role: "admin"; createdAt: string }
-export type ProfileInput = Pick<AuthUser, "fullName" | "phone" | "avatar">;
+export type ProfileInput = Partial<Pick<AuthUser, "fullName" | "phone" | "avatar">>;
 // Signing in sets an HTTP-only cookie; the response only carries the account (see session.ts).
 type UserResponse = { user: AuthUser; message?: string };
 type SignedIn<T> = T & { message: string };
@@ -44,14 +49,22 @@ export const authApi = {
     }),
   logout: () =>
     apiRequest<{ message: string }>("/auth/logout", { method: "POST" }),
-  updateProfile: (input: ProfileInput) =>
+  updateProfile: (input: ProfileInput, ownerId?: string) =>
     apiRequest<UserResponse>("/auth/profile", {
       method: "PATCH",
       body: JSON.stringify(input),
+      headers: ownerId ? { 'X-Profile-Owner': ownerId } : {},
     }),
-  changePassword: (currentPassword: string, newPassword: string) =>
+  uploadAvatar: (file: File, ownerId: string) => {
+    const body = new FormData(); body.append('image', file);
+    return apiRequest<UserResponse>('/auth/profile/avatar', { method: 'PATCH', body, headers: { 'X-Profile-Owner': ownerId } });
+  },
+  removeAvatar: (ownerId: string) => apiRequest<UserResponse>('/auth/profile/avatar', { method: 'DELETE', headers: { 'X-Profile-Owner': ownerId } }),
+  preferences: (input: Partial<CustomerPreferences>, ownerId: string) => apiRequest<UserResponse>('/auth/preferences', { method: 'PATCH', body: JSON.stringify(input), headers: { 'X-Profile-Owner': ownerId } }),
+  changePassword: (currentPassword: string, newPassword: string, ownerId?: string) =>
     apiRequest<SignedIn<UserResponse>>("/auth/password", {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
+      headers: ownerId ? { 'X-Profile-Owner': ownerId } : {},
     }),
 };

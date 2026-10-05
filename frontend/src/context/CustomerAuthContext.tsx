@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { authApi, type AuthUser, type ProfileInput, type RegisterInput } from "../frontApisRoute/auth";
+import { authApi, type AuthUser, type ProfileInput, type RegisterInput, type CustomerPreferences } from "../frontApisRoute/auth";
 import { ApiError } from "../frontApisRoute/client";
 import { SESSION_CHANGED_EVENT, SESSION_ENDED_EVENT, announceSessionChange, type Account } from "../frontApisRoute/session";
 export type { AuthUser } from "../frontApisRoute/auth";
@@ -14,6 +14,9 @@ interface CustomerAuth {
   register: (input: RegisterInput) => Promise<AuthUser>;
   logout: () => Promise<void>;
   updateProfile: (input: ProfileInput) => Promise<void>;
+  uploadAvatar: (file: File) => Promise<void>;
+  removeAvatar: () => Promise<void>;
+  updatePreferences: (input: Partial<CustomerPreferences>) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 const CustomerAuthContext = createContext<CustomerAuth | undefined>(undefined);
@@ -71,15 +74,28 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     announceSessionChange("customer");
   };
-  const updateProfile = async (input: ProfileInput) => { setUser((await authApi.updateProfile(input)).user); };
+  const updateAccount = async (request: (ownerId: string) => Promise<{ user: AuthUser }>) => {
+    if (!user) throw new Error('Please sign in again');
+    const ownerId = user._id;
+    const result = await request(ownerId);
+    // An upload can complete after sign-out or a shared-cookie account switch.
+    setUser((current) => current?._id === ownerId ? result.user : current);
+  };
+  const updateProfile = (input: ProfileInput) => updateAccount((ownerId) => authApi.updateProfile(input, ownerId));
+  const uploadAvatar = (file: File) => updateAccount((ownerId) => authApi.uploadAvatar(file, ownerId));
+  const removeAvatar = () => updateAccount(authApi.removeAvatar);
+  const updatePreferences = (input: Partial<CustomerPreferences>) => updateAccount((ownerId) => authApi.preferences(input, ownerId));
   // A password change ends every other sign-in and gives this browser a fresh one.
-  const changePassword = async (current: string, next: string) => { signedIn(await authApi.changePassword(current, next)); };
+  const changePassword = async (current: string, next: string) => {
+    await updateAccount((ownerId) => authApi.changePassword(current, next, ownerId));
+    announceSessionChange('customer');
+  };
 
   return (
     <CustomerAuthContext.Provider value={{
       user, isAuthenticated: !!user, loading, error, signedOut,
       retrySession: () => { setLoading(true); setAttempt((value) => value + 1); },
-      login, register, logout, updateProfile, changePassword,
+      login, register, logout, updateProfile, uploadAvatar, removeAvatar, updatePreferences, changePassword,
     }}>{children}</CustomerAuthContext.Provider>
   );
 }

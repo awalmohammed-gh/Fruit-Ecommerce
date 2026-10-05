@@ -1,12 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
 import Loading from "../components/card/Loading";
+import { SettingsSkeleton } from '../components/settings/SettingsUi';
 
 // Customer pages (checkout, orders, addresses, account). Reads only the customer session.
 export default function CustomerRoute() {
   const { user, loading, error, retrySession, signedOut } = useCustomerAuth();
   const location = useLocation();
-  if (loading) return <Loading label="Loading your account" />;
+  if (loading) return location.pathname === '/account' ? <SettingsSkeleton /> : <Loading label="Loading your account" />;
   if (error) {
     return (
       <div className="min-h-[calc(100dvh-9rem)] flex flex-col items-center justify-center p-6 text-center">

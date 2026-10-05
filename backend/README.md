@@ -31,6 +31,9 @@ Security headers: every response sends `X-Content-Type-Options`, `X-Frame-Option
 | POST | `/api/auth/admin/logout` | Admin: sign out (clears only `adminToken`) |
 | GET | `/api/auth/admin/me` | Admin: restore sign-in (`admin: null` when signed out) |
 | PATCH | `/api/auth/profile` | Update fullName, phone, avatar |
+| PATCH | `/api/auth/profile/avatar` | Customer: upload own JPG, PNG or WebP photo through Cloudinary (multipart `image`, 5 MB max) |
+| DELETE | `/api/auth/profile/avatar` | Customer: remove own profile photo |
+| PATCH | `/api/auth/preferences` | Customer: save default market sorting and in-app notification preferences |
 | PATCH | `/api/auth/password` | Verify currentPassword and set newPassword |
 | GET | `/api/addresses` | List your addresses |
 | POST | `/api/addresses` | Add address |
@@ -102,7 +105,7 @@ Security headers: every response sends `X-Content-Type-Options`, `X-Frame-Option
 | POST | `/api/delivery/deliveries/:id/deliver` | Partner: complete with the customer's 6-digit code (`otp`) |
 | PATCH | `/api/delivery/deliveries/:id/location` | Partner: share `lat`/`lng` once the order is picked up |
 
-All profile/address ownership comes from the verified cookie. User, role, isActive, password, email and ID fields supplied to a profile update are never applied. Passwords use bcrypt (12 rounds), minimum 8 characters, maximum 72 UTF-8 bytes. Password changes revoke other sessions by incrementing a token version. Avatar updates accept an HTTPS image URL; Cloudinary configuration is preserved for future upload support.
+All profile/address ownership comes from the verified cookie. User, role, isActive, password, email and ID fields supplied to a profile update are never applied. Passwords use bcrypt (12 rounds), minimum 8 characters, maximum 72 UTF-8 bytes. Password changes revoke other sessions by incrementing a token version. Avatar updates can use the existing HTTPS URL profile field or the authenticated Cloudinary photo upload endpoint. Customer settings and preference behavior are documented in [CUSTOMER_SETTINGS.md](../CUSTOMER_SETTINGS.md).
 
 Address fields: `label`, `fullName`, `phone`, `addressLine1`, `addressLine2`, `city`, `region`, `digitalAddress`, `landmark`, `country`, `isDefault`. Label, receiver name, phone, address line 1, city and region are required. Country defaults to Ghana; digital address is optional. Any descriptive label is allowed. The region must be one of Ghana's 16 regions.
 
