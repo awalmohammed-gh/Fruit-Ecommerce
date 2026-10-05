@@ -62,9 +62,9 @@ function Steps() {
 
 // Public: anyone can apply here without a GreenFarm customer account.
 export default function DeliveryApply() {
-  // An application submitted from this device, so returning shows its status.
+  // An application submitted during this page visit, retained across client-side navigation.
   const [saved, setSaved] = useState(savedApplication);
-  // The reference code is only kept for the tab it was shown in; elsewhere we only know the email.
+  // A refresh forgets the email and reference; status can still be checked by entering them again.
   const known = saved?.reference ? saved : null;
   const [submitted, setSubmitted] = useState<{ application: PartnerApplication; reference: string } | null>(null);
   const [reapplying, setReapplying] = useState(false);

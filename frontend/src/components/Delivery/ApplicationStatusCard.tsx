@@ -122,7 +122,7 @@ export default function ApplicationStatusCard({ application, reference, justSubm
                   <CopyIcon className="size-3.5" aria-hidden="true" /> Copy
                 </button>
               </div>
-              <p className="text-xs text-zinc-600 mt-2">Keep this code. With your email, it lets you check your application and activate your account once you're approved. We've also saved it on this device.</p>
+              <p className="text-xs text-zinc-600 mt-2">Keep this code somewhere safe before leaving or refreshing this page. With your email, it lets you check your application and activate your account once you're approved.</p>
             </div>
           )}
           {reason && (

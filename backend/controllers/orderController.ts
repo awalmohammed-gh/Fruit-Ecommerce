@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import type { Types } from "mongoose";
 import Order, { type OrderStatus } from "../models/Order.js";
 import Address from "../models/Address.js";
+import Cart from "../models/Cart.js";
 import * as validate from "../middleware/validate.js";
 import { HttpError } from "../middleware/errors.js";
 import { pricing } from "../config/pricing.js";
@@ -57,6 +58,8 @@ export const orderController = {
         ...(checkoutKey && { checkoutKey }),
       });
       await created.save({ session });
+      // The purchased cart is cleared atomically with stock reservation and order creation.
+      await Cart.updateOne({ user: user._id }, { $set: { items: [] }, $inc: { __v: 1 } }, { session });
       return created;
     }).catch(async (error: unknown) => {
       // Both sends ran at once and the other one won: answer with its order.

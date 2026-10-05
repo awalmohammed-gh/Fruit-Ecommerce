@@ -4,6 +4,7 @@ import Banner from "../components/common/Banner"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
 import CartModal from "../components/common/CartModal"
+import CartSignInDialog from "../components/auth/CartSignInDialog"
 
 const AppLayout = () => {
   return (
@@ -19,6 +20,7 @@ const AppLayout = () => {
       </main>
       <Footer/>
       <CartModal/>
+      <CartSignInDialog/>
     </div>
     </MotionConfig>
   )

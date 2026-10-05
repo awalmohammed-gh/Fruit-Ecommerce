@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import toast from "../toast/toast";
 import { usePricing } from "../../hooks/usePricing";
 import { useEffect, useRef } from "react";
 import { useCart } from "../../context/CartContext";
@@ -23,6 +22,9 @@ const CartModal = () => {
     cartTotal,
     isCartOpen,
     setIsCartOpen,
+    saving,
+    error,
+    refresh,
   } = useCart();
   const navigate = useNavigate();
   const { pricing, estimate } = usePricing();
@@ -80,6 +82,7 @@ const CartModal = () => {
 
         {/* Items Container */}
         <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4 overscroll-contain">
+          {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error} <button type="button" onClick={refresh} disabled={saving} className="font-semibold underline">Retry</button></p>}
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <div className="p-4 bg-gray-50 rounded-full mb-4">
@@ -124,6 +127,7 @@ const CartModal = () => {
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
+                        disabled={saving}
                         aria-label={`Decrease quantity of ${item.product.name}`}
                         className="size-7 rounded-lg bg-white border border-app-border flex-center hover:bg-app-green hover:border-app-green hover:text-white transition-all duration-300 active:scale-95"
                         onClick={() =>
@@ -138,7 +142,7 @@ const CartModal = () => {
                       <button
                         type="button"
                         aria-label={`Increase quantity of ${item.product.name}`}
-                        disabled={item.quantity >= maxQuantity(item.product)}
+                        disabled={saving || item.quantity >= maxQuantity(item.product)}
                         className="size-7 rounded-lg bg-white border border-app-border flex-center hover:bg-app-green hover:border-app-green hover:text-white transition-all duration-300 active:scale-95"
                         onClick={() =>
                           updateQuantity(item.product._id, item.quantity + 1)
@@ -159,8 +163,9 @@ const CartModal = () => {
                       </span>
                       <button
                         type="button"
+                        disabled={saving}
                         aria-label={`Remove ${item.product.name} from cart`}
-                        onClick={() => { removeFromCart(item.product._id); toast.info(`${item.product.name} removed from cart`, { duration: 2500 }); }}
+                        onClick={() => removeFromCart(item.product._id)}
                         className="p-1.5 text-app-text-light hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-300"
                       >
                         <TrashIcon className="size-4" />

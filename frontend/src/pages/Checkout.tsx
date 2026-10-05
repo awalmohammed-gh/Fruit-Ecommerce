@@ -25,7 +25,7 @@ import { newCheckoutKey } from "../utils/orderLimits";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { items, cartTotal, clearCart, updateQuantity, removeFromCart, applyQuote } = useCart();
+  const { items, cartTotal, reloadCart, updateQuantity, removeFromCart, applyQuote, loading: cartLoading, saving: cartSaving, error: cartError, refresh: refreshCart } = useCart();
   const { pricing } = usePricing();
   const { addresses, loading: addressesLoading, error: addressesError, refresh } = useAddresses();
   const user = { addresses };
@@ -75,12 +75,13 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = async () => {
-    if (!address || loading) return;
+    if (!address || loading || cartLoading || cartSaving || cartError) return;
     setLoading(true);
     setOrderError("");
     try {
       const { order } = await ordersApi.create({ addressId: address._id, paymentMethod: "cash", items: lines }, checkoutKey);
-      clearCart();
+      // The server clears the database cart with the order. Refresh this tab's cart state as well.
+      await reloadCart().catch(() => toast.error("Your order was placed. Reload your basket to see the updated cart."));
       toast.success(`Order #${order.number} placed`);
       navigate(`/my-orders/${order._id}`, { replace: true });
     } catch (error) {
@@ -92,6 +93,9 @@ const Checkout = () => {
       setLoading(false);
     }
   };
+
+  if (cartLoading || cartSaving) return <p role="status" className="py-16 text-center text-app-green">Loading your basket…</p>;
+  if (cartError) return <div role="alert" className="mx-auto max-w-xl p-8 text-red-700">{cartError} <button type="button" onClick={refreshCart} className="font-semibold underline">Retry</button></div>;
 
   if (items.length === 0) {
     return (

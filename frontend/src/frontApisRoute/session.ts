@@ -27,8 +27,3 @@ channel?.addEventListener("message", (event: MessageEvent<unknown>) => {
 export function announceSessionChange(account: Account) {
   channel?.postMessage(account);
 }
-
-// Earlier versions kept a session ID per tab in sessionStorage. Those are no longer used, so clear them.
-try {
-  for (const account of ACCOUNTS) sessionStorage.removeItem(`greenfarm.session.${account}`);
-} catch { /* storage blocked: nothing to clear */ }

@@ -41,7 +41,13 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const ended = (event: Event) => { if ((event as CustomEvent<Account>).detail === "customer") setUser(null); };
-    const changed = (event: Event) => { if ((event as CustomEvent<Account>).detail === "customer") setAttempt((value) => value + 1); };
+    const changed = (event: Event) => {
+      if ((event as CustomEvent<Account>).detail !== "customer") return;
+      // Shared cookies may now belong to a different shopper; hide the previous shopper's data at once.
+      setUser(null);
+      setLoading(true);
+      setAttempt((value) => value + 1);
+    };
     window.addEventListener(SESSION_ENDED_EVENT, ended);
     window.addEventListener(SESSION_CHANGED_EVENT, changed);
     return () => {

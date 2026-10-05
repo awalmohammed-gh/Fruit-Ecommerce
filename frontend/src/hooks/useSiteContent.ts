@@ -3,16 +3,10 @@ import { contentApi, type PublicContent } from "../frontApisRoute/content";
 
 // The storefront's admin-managed content (hero, banners, section text, store details), shared by every
 // component that shows part of it: one request per page load.
-// The last copy is kept in this browser so the announcement bar and hero appear straight away on the
-// next visit instead of popping in; the fresh copy from the server replaces it as soon as it arrives.
-const KEY = "greenfarm.content";
+// The backend owns these settings. Share the fetched copy in memory for this page visit only.
 interface State { data: PublicContent | null; error: string | null }
 
-function remembered(): PublicContent | null {
-  try { return JSON.parse(localStorage.getItem(KEY) ?? "null") as PublicContent | null; } catch { return null; }
-}
-
-let state: State = { data: remembered(), error: null };
+let state: State = { data: null, error: null };
 let requested = false;
 const listeners = new Set<() => void>();
 const publish = (next: State) => { state = next; listeners.forEach((listener) => listener()); };
@@ -23,7 +17,6 @@ function load() {
   contentApi.site().then(
     (data) => {
       publish({ data, error: null });
-      try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* storage unavailable */ }
     },
     (error: unknown) => {
       requested = false;

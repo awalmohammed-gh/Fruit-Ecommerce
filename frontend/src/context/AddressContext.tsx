@@ -25,7 +25,7 @@ interface AddressContextType {
   setDefaultAddress: (id: string) => Promise<void>;
 }
 const AddressContext = createContext<AddressContextType | undefined>(undefined);
-function UserAddresses({ children }: { children: ReactNode }) {
+export function AddressProvider({ children }: { children: ReactNode }) {
   const { user } = useCustomerAuth();
   const [addresses, setAddresses] = useState<SavedAddress[]>([]);
   const userId = user?._id;
@@ -34,6 +34,17 @@ function UserAddresses({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const mutationPending = useRef(false);
+  // Another shopper (or none) starts with an empty list. Only this state resets: the pages below keep theirs,
+  // so signing in doesn't reset the page (or a pending Add to Cart).
+  const [listOwner, setListOwner] = useState(userId);
+  if (listOwner !== userId) {
+    setListOwner(userId);
+    setAddresses([]);
+    setError(null);
+    setLoading(!!userId);
+  }
+  const currentOwner = useRef(userId);
+  useEffect(() => { currentOwner.current = userId; }, [userId]);
   useEffect(() => {
     if (!userId) return;
     let active = true;
@@ -63,8 +74,11 @@ function UserAddresses({ children }: { children: ReactNode }) {
       throw new Error("Please wait for the current address change to finish");
     mutationPending.current = true;
     setSaving(true);
+    const owner = userId;
     try {
       const result = await request();
+      // A change that finishes after the shopper signed out (or switched) doesn't show up in the next list.
+      if (currentOwner.current !== owner) return;
       setAddresses(result.addresses);
       setError(null);
     } finally {
@@ -93,10 +107,6 @@ function UserAddresses({ children }: { children: ReactNode }) {
       {children}
     </AddressContext.Provider>
   );
-}
-export function AddressProvider({ children }: { children: ReactNode }) {
-  const { user } = useCustomerAuth();
-  return <UserAddresses key={user?._id ?? "guest"}>{children}</UserAddresses>;
 }
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAddressContext() {
