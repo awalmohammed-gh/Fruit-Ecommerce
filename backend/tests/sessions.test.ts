@@ -215,6 +215,9 @@ test('cookie-authenticated changes need the request header and an allowed origin
   assert.equal(allowed.headers['access-control-allow-origin'], 'http://localhost:5174');
   assert.equal(allowed.headers['access-control-allow-credentials'], 'true');
   await shopper.post('/api/addresses').set(header).set('Origin', 'http://localhost:5174').send(address).expect(201);
+  // The address the API is served on is allowed without being listed; any other site still isn't.
+  await shopper.post('/api/addresses').set(header).set('Host', 'greenfarm-abc123.vercel.app').set('Origin', 'https://greenfarm-abc123.vercel.app').send({ ...address, label: 'Work' }).expect(201);
+  await shopper.post('/api/addresses').set(header).set('Host', 'greenfarm-abc123.vercel.app').set('Origin', 'https://evil.example').send(address).expect(403);
 });
 
 test('responses carry security headers', async () => {
