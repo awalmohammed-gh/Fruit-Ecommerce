@@ -6,6 +6,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import { breadcrumbFor } from "./lib/navigation";
 import ui from "../../components/admin/ui.module.css";
 import styles from "./AdminNavbar.module.css";
+import NotificationBell from "../../components/notifications/NotificationBell";
 
 interface AdminNavbarProps { menuOpen: boolean; onOpenMenu: () => void }
 
@@ -67,6 +68,7 @@ export default function AdminNavbar({ menuOpen, onOpenMenu }: AdminNavbarProps) 
         <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search products…" aria-label="Search products" />
       </form>
 
+      {admin && <NotificationBell account="admin" ownerId={admin._id} />}
       <details ref={account} className={styles.account} onKeyDown={(event) => {
         if (event.key === "Escape" && account.current?.open) {
           closeAccount();

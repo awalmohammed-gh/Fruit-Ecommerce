@@ -5,6 +5,7 @@ import Order, { OTP_VISIBLE_STATUSES, type OrderDocument, type OrderStatus } fro
 import { orderTotals, roundMoney } from "../config/pricing.js";
 import { HttpError } from "../middleware/errors.js";
 import { orderLimits } from "../config/orderLimits.js";
+import { notifyOrder } from "./notifications.js";
 
 export interface CartLine { productId: string; quantity: number }
 
@@ -87,6 +88,7 @@ export async function cancelUnconfirmedOrders(now = new Date()) {
       const order = await Order.findOne({ _id, status: "Order Placed" }).session(session);
       if (!order) return false;
       setStatus(order, "Cancelled", note);
+      await notifyOrder(order, "Cancelled", session, true);
       order.cancelReason = note;
       await order.save({ session });
       await restoreStock(order, session);

@@ -14,6 +14,7 @@ import BannerSettings from "./settings/BannerSettings";
 import AdvertSettings from "./settings/AdvertSettings";
 import HomepageSettings from "./settings/HomepageSettings";
 import SeoSettings from "./settings/SeoSettings";
+import NotificationSettings from "./settings/NotificationSettings";
 import ui from "../../components/admin/ui.module.css";
 import s from "./settings/settings.module.css";
 
@@ -27,6 +28,7 @@ const SECTIONS: Section[] = [
   { id: "hero", label: "Homepage hero", icon: PanelTopIcon, description: "Shape the first thing shoppers see. Edit your hero image, message and links." },
   { id: "banners", label: "Promotions", icon: GalleryHorizontalEndIcon, description: "Create and schedule banners for the homepage and product pages." },
   { id: "ads", label: "Announcements", icon: MegaphoneIcon, description: "Manage your announcement bar, delivery partner invitation and deals section." },
+  { id: "notifications", label: "Notifications", icon: MegaphoneIcon, description: "Send store updates to all customers or everyone with an account." },
   { id: "homepage", label: "Homepage sections", icon: LayoutTemplateIcon, description: "Refine store highlights and the headings throughout your homepage." },
   { id: "seo", label: "Search & sharing", icon: SearchIcon, description: "Control how your store appears on Google and when links are shared." },
 ];
@@ -34,7 +36,7 @@ const SECTION_GROUPS = [
   { label: "My account", ids: ["account", "preferences"] },
   { label: "System", ids: ["general"] },
   { label: "Storefront", ids: ["store", "hero", "homepage", "seo"] },
-  { label: "Campaigns", ids: ["banners", "ads"] },
+  { label: "Campaigns", ids: ["banners", "ads", "notifications"] },
 ];
 // Sections that edit the storefront content document (Hero, Store, ...). They stay mounted, so unsaved edits survive switching.
 const CONTENT_SECTIONS = { store: StoreSettings, hero: HeroSettings, ads: AdvertSettings, homepage: HomepageSettings, seo: SeoSettings };
@@ -103,6 +105,7 @@ export default function AdminSettings() {
         <div id="account" className={s.section} data-settings-section="account" hidden={active.id !== "account"}><AccountSettings onDirty={reportDirty} /></div>
         <div className={s.section} data-settings-section="preferences" hidden={active.id !== "preferences"}><PreferencesSettings onDirty={reportDirty} /></div>
         <div className={s.section} data-settings-section="banners" hidden={active.id !== "banners"}>{bannersOpened && <BannerSettings />}</div>
+        <div className={s.section} data-settings-section="notifications" hidden={active.id !== "notifications"}><NotificationSettings onDirty={reportDirty} /></div>
 
         {Object.entries(CONTENT_SECTIONS).map(([id, Editor]) => (
           <div key={id} className={s.section} data-settings-section={id} hidden={active.id !== id}>

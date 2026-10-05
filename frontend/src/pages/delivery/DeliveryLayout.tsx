@@ -1,4 +1,5 @@
 import { useState } from "react";
+import NotificationBell from "../../components/notifications/NotificationBell";
 import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { HistoryIcon, HomeIcon, LogOutIcon, PackageIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, TruckIcon, UserIcon } from "lucide-react";
 import toast from "../../components/toast/toast";
@@ -111,6 +112,7 @@ export default function DeliveryLayout() {
               {collapsed ? <PanelLeftOpenIcon className="size-5" aria-hidden="true" /> : <PanelLeftCloseIcon className="size-5" aria-hidden="true" />}
             </button>
             <div className="ml-auto flex items-center gap-2">
+              {partner && <NotificationBell key={partner._id} account="partner" ownerId={partner._id} />}
               <Link to="/delivery-partner/profile" className="flex items-center gap-2 rounded-full pr-1" aria-label="My profile">
                 <span className="hidden sm:block text-sm font-medium text-zinc-700">{partner ? partner.fullName.split(" ")[0] : placeholder}</span>
                 <span className={`size-8 rounded-full text-white text-sm font-semibold flex-center ${partner ? "bg-app-green" : "bg-app-green/10 animate-pulse"}`} aria-hidden="true">{initial}</span>

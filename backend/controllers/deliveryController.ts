@@ -8,6 +8,7 @@ import Order, { type OrderDocument } from "../models/Order.js";
 import * as validate from "../middleware/validate.js";
 import { HttpError } from "../middleware/errors.js";
 import { transaction } from "../services/orders.js";
+import { createNotification, notifyOrder } from "../services/notifications.js";
 import { NEXT_STEP, deliveryForPartner, ownApplication, record, syncOrder } from "../services/delivery.js";
 import { endSession, partnerBlock, restorePartner, startSession } from "../middleware/auth.js";
 import { failureLock, signInLock } from "../middleware/rateLimit.js";
@@ -49,6 +50,12 @@ async function changeDelivery(req: Request, work: (assignment: AssignmentDocumen
     syncOrder(order, assignment, note);
     await assignment.save({ session });
     await order.save({ session });
+    await notifyOrder(order, assignment.status, session, ["Delivered", "Failed Delivery", "Declined"].includes(assignment.status));
+    if (assignment.status === "Delivered") await createNotification({
+      audience: "individual", recipient: String(order.user), recipientAccount: "customer", type: "payment",
+      title: "Payment received", message: `Cash payment for order #${order.number} has been recorded.`,
+      link: `/my-orders/${order._id}`,
+    }, session);
     return { assignment, order };
   });
   return deliveryForPartner(assignment, order);
@@ -107,6 +114,11 @@ export function deliveryController(config: AppConfig) {
           ...fields, referenceHash: hashReference(reference), previousApplication: existing?._id ?? null,
           statusHistory: [{ ...history, note: existing ? "Applied again after an earlier application was not approved" : "Application submitted" }],
         }], { session });
+        await createNotification({
+          audience: "individual", recipient: "admin", recipientAccount: "admin", type: "account",
+          title: "Delivery partner application", message: "A new delivery partner application is ready for review.",
+          link: "/admin/delivery/applications",
+        }, session);
         return created!;
       });
       res.status(201).json({ message: "Application submitted", application: ownApplication(application), reference });

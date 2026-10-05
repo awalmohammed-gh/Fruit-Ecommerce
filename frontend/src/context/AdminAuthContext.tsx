@@ -34,7 +34,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const ended = (event: Event) => { if ((event as CustomEvent<Account>).detail === "admin") setAdmin(null); };
-    const changed = (event: Event) => { if ((event as CustomEvent<Account>).detail === "admin") setAttempt((value) => value + 1); };
+    const changed = (event: Event) => {
+      if ((event as CustomEvent<Account>).detail !== "admin") return;
+      setAdmin(null);
+      setChecked(false);
+      setAttempt((value) => value + 1);
+    };
     window.addEventListener(SESSION_ENDED_EVENT, ended);
     window.addEventListener(SESSION_CHANGED_EVENT, changed);
     return () => {

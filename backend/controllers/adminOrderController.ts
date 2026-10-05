@@ -7,6 +7,7 @@ import { HttpError } from "../middleware/errors.js";
 import { roundMoney } from "../config/pricing.js";
 import { present, restoreStock, setStatus, transaction, withPartner } from "../services/orders.js";
 import { closeForCancelledOrder } from "../services/delivery.js";
+import { notifyOrder } from "../services/notifications.js";
 
 export const STAGES: Record<string, OrderStatus[]> = {
   pending: ["Order Placed", "Confirmed"],
@@ -96,6 +97,7 @@ export const adminOrderController = {
       if (status === "Cancelled") found.cancelReason = "Cancelled by GreenFarm";
       await found.save({ session });
       if (status === "Cancelled") await restoreStock(found, session);
+      await notifyOrder(found, status, session);
       return found;
     });
     await respond(res, order, `Order marked ${status}`);

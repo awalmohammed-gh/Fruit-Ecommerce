@@ -6,6 +6,7 @@ import { securityHeaders } from './middleware/securityHeaders.js';
 import { authRoutes } from './routes/authRoutes.js';
 import { addressRoutes } from './routes/addressRoutes.js';
 import { cartRoutes } from './routes/cartRoutes.js';
+import { notificationRoutes } from './routes/notificationRoutes.js';
 import { productRoutes } from './routes/productRoutes.js';
 import { categoryRoutes } from './routes/categoryRoutes.js';
 import { adminRoutes } from './routes/adminRoutes.js';
@@ -73,7 +74,7 @@ export function createApp(overrides: Partial<AppConfig> = {}) {
       origin: true,
       credentials: true,
       methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'X-GreenFarm-Request', 'Idempotency-Key', 'X-Cart-Owner'],
+      allowedHeaders: ['Content-Type', 'X-GreenFarm-Request', 'Idempotency-Key', 'X-Cart-Owner', 'X-Notification-Owner'],
       maxAge: 600,
     });
   }));
@@ -89,6 +90,9 @@ export function createApp(overrides: Partial<AppConfig> = {}) {
   app.get('/api/health', (_req, res) => { res.json({ status: 'ok' }); });
   app.use('/api/auth', authRoutes(config)); app.use('/api/addresses', addressRoutes(config));
   app.use('/api/cart', cartRoutes(config));
+  app.use('/api/notifications', notificationRoutes(config, 'customer'));
+  app.use('/api/admin/notifications', notificationRoutes(config, 'admin'));
+  app.use('/api/delivery/notifications', notificationRoutes(config, 'partner'));
   app.use('/api/products', productRoutes(config));
   app.use('/api/categories', categoryRoutes(config));
   app.use('/api/admin', adminRoutes(config));

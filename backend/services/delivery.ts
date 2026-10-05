@@ -4,6 +4,7 @@ import DeliveryPartner, { type DeliveryPartnerDocument } from "../models/Deliver
 import Order, { FINAL_STATUSES, READY_FOR_DELIVERY, type OrderDocument, type OrderStatus } from "../models/Order.js";
 import { HttpError } from "../middleware/errors.js";
 import { setStatus } from "./orders.js";
+import { createNotification, notifyOrder } from "./notifications.js";
 
 type Actor = "management" | "partner";
 
@@ -64,6 +65,17 @@ export async function assignOrder(orderId: string, partnerId: string, notes: str
   if (order.status === "Assigned") order.statusHistory.push({ status: "Assigned", note, timestamp: new Date() });
   else setStatus(order, "Assigned", note);
   await order.save({ session });
+  await notifyOrder(order, "Assigned", session);
+  await createNotification({
+    audience: "individual", recipient: String(partner._id), recipientAccount: "partner", type: "order",
+    title: "Delivery assigned", message: `You have been assigned order #${order.number}.`,
+    link: `/delivery-partner/deliveries/${assignment!._id}`,
+  }, session);
+  if (current) await createNotification({
+    audience: "individual", recipient: String(current.deliveryPartner), recipientAccount: "partner", type: "order",
+    title: "Delivery reassigned", message: `Order #${order.number} has been reassigned to another delivery partner.`,
+    link: "/delivery-partner/history",
+  }, session);
   return { order, assignment: assignment!, partner };
 }
 
@@ -74,6 +86,11 @@ export async function closeForCancelledOrder(order: OrderDocument, session: Clie
   record(current, "Cancelled", "management", "Order cancelled by management");
   await current.save({ session });
   order.deliveryStatus = "Cancelled";
+  await createNotification({
+    audience: "individual", recipient: String(current.deliveryPartner), recipientAccount: "partner", type: "order",
+    title: "Delivery cancelled", message: `Order #${order.number} has been cancelled.`,
+    link: "/delivery-partner/history",
+  }, session);
 }
 
 // ---------- Shapes ----------

@@ -9,6 +9,8 @@ import DeliveryAssignment from '../models/DeliveryAssignment.js';
 import Review from '../models/Review.js';
 import Session from '../models/Session.js';
 import RateLimit from '../models/RateLimit.js';
+import Notification, { NotificationCounter } from '../models/Notification.js';
+import NotificationReceipt from '../models/NotificationReceipt.js';
 // dbName overrides the database in the URI; without either, MongoDB silently uses "test".
 export async function connectDatabase(uri: string | undefined, dbName?: string) {
   if (!uri) throw new Error('MONGODB_URI is required');
@@ -28,6 +30,10 @@ export async function connectDatabase(uri: string | undefined, dbName?: string) 
   await Review.init();
   await Session.init();
   await RateLimit.init();
+  await Notification.init();
+  await NotificationReceipt.init();
+  await NotificationCounter.init();
+  await NotificationCounter.updateOne({ _id: 'feed' }, { $setOnInsert: { value: 0 } }, { upsert: true });
   await addProductSlugs();
 }
 

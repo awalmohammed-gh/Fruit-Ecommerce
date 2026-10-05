@@ -41,7 +41,12 @@ export function PartnerAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const ended = (event: Event) => { if ((event as CustomEvent<Account>).detail === "partner") setPartner(null); };
-    const changed = (event: Event) => { if ((event as CustomEvent<Account>).detail === "partner") refresh(); };
+    const changed = (event: Event) => {
+      if ((event as CustomEvent<Account>).detail !== "partner") return;
+      setPartner(null);
+      setChecked(false);
+      refresh();
+    };
     window.addEventListener(SESSION_ENDED_EVENT, ended);
     window.addEventListener(SESSION_CHANGED_EVENT, changed);
     window.addEventListener(PARTNER_BLOCKED_EVENT, refresh);

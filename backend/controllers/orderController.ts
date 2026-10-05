@@ -7,6 +7,7 @@ import * as validate from "../middleware/validate.js";
 import { HttpError } from "../middleware/errors.js";
 import { pricing } from "../config/pricing.js";
 import { orderLimits } from "../config/orderLimits.js";
+import { notifyOrder } from "../services/notifications.js";
 import { newDeliveryOtp, present, quoteCart, reserveStock, restoreStock, setStatus, transaction, withPartner } from "../services/orders.js";
 
 // Customers can cancel until someone has been sent to pack or deliver the order.
@@ -60,6 +61,7 @@ export const orderController = {
       await created.save({ session });
       // The purchased cart is cleared atomically with stock reservation and order creation.
       await Cart.updateOne({ user: user._id }, { $set: { items: [] }, $inc: { __v: 1 } }, { session });
+      await notifyOrder(created, "Order Placed", session, true);
       return created;
     }).catch(async (error: unknown) => {
       // Both sends ran at once and the other one won: answer with its order.
@@ -90,6 +92,7 @@ export const orderController = {
       found.cancelReason = "Cancelled by customer";
       await found.save({ session });
       await restoreStock(found, session);
+      await notifyOrder(found, "Cancelled", session, true);
       return found;
     });
     res.json({ message: "Order cancelled", order: present(order, "customer") });

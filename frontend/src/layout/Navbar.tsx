@@ -8,6 +8,7 @@ import CategoriesDropdown from "../components/navbar/CategoriesDropdown";
 import MobileMenu from "../components/navbar/MobileMenu";
 import UserMenu from "../components/navbar/UserMenu";
 import { navLinks } from "../components/navbar/navConfig";
+import NotificationBell from "../components/notifications/NotificationBell";
 
 const Navbar = () => {
   const { user, isAuthenticated, loading: authLoading, error: authError, retrySession } = useCustomerAuth();
@@ -97,6 +98,7 @@ const Navbar = () => {
 
         {/* Right side */}
         <div className="flex items-center gap-2 sm:gap-3 ml-auto md:ml-0 shrink-0">
+          {user && !authLoading && <NotificationBell key={user._id} account="customer" ownerId={user._id} />}
           <Link
             to="/cart"
             onClick={() => { closeMobileMenu(); window.scrollTo(0, 0); }}
