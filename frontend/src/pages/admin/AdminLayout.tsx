@@ -1,5 +1,5 @@
 import { AdminPreferencesProvider, useAdminPreferences } from "../../context/AdminPreferencesContext";
-import { useCallback, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
 import { Outlet } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
@@ -26,7 +26,7 @@ function AdminWorkspace() {
         <div className={styles.main}>
           <AdminNavbar menuOpen={menuOpen} onOpenMenu={() => setMenuOpen(true)} />
           <main className={styles.content}>
-            {loading || preferencesLoading ? <div className={styles.contentLoading}><LoadingState label={loading ? "Checking your admin session" : "Loading your workspace preferences"} /></div> : <Outlet />}
+            {loading || preferencesLoading ? <div className={styles.contentLoading}><LoadingState label={loading ? "Checking your admin session" : "Loading your workspace preferences"} /></div> : <Suspense fallback={<div className={styles.contentLoading}><LoadingState label="Loading" /></div>}><Outlet /></Suspense>}
           </main>
         </div>
       </div>

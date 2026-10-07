@@ -4,6 +4,7 @@ import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 import * as validate from "../middleware/validate.js";
 import { HttpError } from "../middleware/errors.js";
+import { sharedCache } from "../middleware/cache.js";
 
 function validId(req: Request) {
   if (!mongoose.isObjectIdOrHexString(req.params.id))
@@ -21,11 +22,14 @@ async function productCounts() {
 
 export const categoryController = {
   // Public results never include disabled categories or the management repair list.
+  // Only what the navigation and category cards show; search-engine fields are read server-side (services/seo.ts).
   publicList: async (_req: Request, res: Response) => {
     const [categories, counts] = await Promise.all([
-      Category.find({ isActive: { $ne: false } }).sort({ name: 1 }).select('-__v').lean(),
+      Category.find({ isActive: { $ne: false } }).sort({ name: 1 }).select('name slug image description').lean(),
       productCounts(),
     ]);
+    // The same for every visitor; after an admin change the storefront asks again with a fresh URL.
+    sharedCache(res, 60);
     res.json({ categories: categories.map((category) => ({
       ...category, isActive: true, description: category.description ?? '',
       productCount: counts.get(category.slug)?.count ?? 0,

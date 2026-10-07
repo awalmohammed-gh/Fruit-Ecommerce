@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import NotificationBell from "../../components/notifications/NotificationBell";
 import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { HistoryIcon, HomeIcon, LogOutIcon, PackageIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, TruckIcon, UserIcon } from "lucide-react";
@@ -130,7 +130,9 @@ export default function DeliveryLayout() {
                 <h1 className="text-xl sm:text-2xl font-semibold text-app-green">{page.label}</h1>
                 <p className="text-sm text-app-text-light mt-0.5">{page.description}</p>
               </div>
-              <Outlet context={{ partner, refreshPartner: refresh } satisfies PartnerContext} />
+              <Suspense fallback={<Loading fill label="Loading" />}>
+                <Outlet context={{ partner, refreshPartner: refresh } satisfies PartnerContext} />
+              </Suspense>
             </div>
           ) : loading ? <Loading fill label="Opening your workspace" /> : (
             <div role="alert" className="flex-1 flex flex-col items-center justify-center gap-3 text-center">

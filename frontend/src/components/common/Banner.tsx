@@ -6,12 +6,15 @@ import type { Announcement } from '../../frontApisRoute/content'
 // The announcement bar above every store page, set in Admin → Settings → Advertisements.
 // Dismissing it lasts for this browser session, and only for this message: a new message shows again.
 const Banner = () => {
-    const { data } = useSiteContent()
+    const { data, error } = useSiteContent()
     const announcement = data?.announcement
     const [dismissed, setDismissed] = useState(() => {
         try { return sessionStorage.getItem('banner_dismissed') ?? '' } catch { return '' }
     })
 
+    // Until the content arrives, keep the bar's space so the page doesn't jump down when it appears
+    // (unless one was dismissed this session: then it most likely stays hidden).
+    if (!data && !error && !dismissed) return <AnnouncementBar announcement={{ message: '', secondary: '' }} placeholder />
     if (!announcement || dismissed === announcement.message) return null
 
     const dismissBanner = () => {
@@ -22,13 +25,15 @@ const Banner = () => {
 }
 
 // The bar itself; the admin preview renders it with unsaved changes.
-export const AnnouncementBar = ({ announcement, onDismiss }: { announcement: Pick<Announcement, 'message' | 'secondary'>; onDismiss?: () => void }) => {
+// placeholder: the empty bar holding its space while the content loads.
+export const AnnouncementBar = ({ announcement, onDismiss, placeholder = false }: { announcement: Pick<Announcement, 'message' | 'secondary'>; onDismiss?: () => void; placeholder?: boolean }) => {
   return (
-        <div className="bg-linear-to-r from-app-green via-emerald-800 to-app-green text-white text-xs sm:text-sm relative overflow-hidden">
+        <div aria-hidden={placeholder || undefined} className="bg-linear-to-r from-app-green via-emerald-800 to-app-green text-white text-xs sm:text-sm relative overflow-hidden">
           <div className="flex-center max-w-7xl mx-auto pl-4 pr-9 sm:px-10 lg:px-8 py-2 gap-6">
             <div className="flex-center gap-2 min-w-0">
               <TruckIcon className="size-4 shrink-0" aria-hidden="true" />
-              <span className='font-medium truncate'>{announcement.message}</span>
+              {/* A non-breaking space keeps the line height while the message loads. */}
+              <span className='font-medium truncate'>{announcement.message || ' '}</span>
             </div>
             {announcement.secondary && <>
             <span className='hidden sm:inline text-white/40' aria-hidden="true">| </span>
@@ -38,13 +43,13 @@ export const AnnouncementBar = ({ announcement, onDismiss }: { announcement: Pic
             </div>
             </>}
           </div>
-          <button
+          {!placeholder && <button
             aria-label="Dismiss announcement"
             className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-white/10 rounded-full transition-colors p-1"
             onClick={onDismiss}
           >
             <XIcon className="size-3.5" aria-hidden="true" />
-          </button>
+          </button>}
         </div>
   );
 }

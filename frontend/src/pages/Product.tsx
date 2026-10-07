@@ -11,6 +11,7 @@ import { productsApi, type ProductQuery } from "../frontApisRoute/products";
 import { useResource } from "../hooks/useResource";
 import { useStoreCategories } from "../hooks/useStoreCategories";
 import "./market.css";
+import { sizedImage } from "../utils/links";
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 
 const PAGE_SIZE = 12;
@@ -27,7 +28,7 @@ function toQuery(params: URLSearchParams, page = Math.max(1, Number(params.get("
     organic: params.get("organic") === "true" ? "true" : "",
     stock: params.get("inStock") === "true" ? "in" : "",
     sort: params.get("sort") || "newest",
-    page, limit,
+    page, limit, view: "card",
   } as ProductQuery;
 }
 const invalidBudget = (params: URLSearchParams) => Boolean(params.get("minPrice") && params.get("maxPrice") && Number(params.get("minPrice")) > Number(params.get("maxPrice")));
@@ -68,7 +69,7 @@ const Products = () => {
   const badBudget = invalidBudget(params);
   const results = useResource(`market:${params.toString()}:${selectedCategory?._id ?? ""}`, () => (badBudget || (category && !selectedCategory) ? Promise.resolve(null) : productsApi.list(toQuery(params))));
   // Two well-rated products decorate the intro.
-  const scene = useResource(`market-scene:${category ? "category" : "all"}`, () => category ? Promise.resolve(null) : productsApi.list({ sort: "rating", stock: "in", limit: 2 }));
+  const scene = useResource(`market-scene:${category ? "category" : "all"}`, () => category ? Promise.resolve(null) : productsApi.list({ sort: "rating", stock: "in", limit: 2, view: "card" }));
   const draftCount = useResource(`market-draft:${filterOpen ? draft.toString() : ""}`, () =>
     !filterOpen || invalidBudget(draft) ? Promise.resolve(null) : productsApi.list(toQuery(draft, 1, 1)).then((result) => result.pagination.total));
 
@@ -198,7 +199,7 @@ const Products = () => {
           {rail.map((item, index) => {
             const selected = item.key ? category === item.key : !category;
             return <motion.button variants={fadeScale} key={item.key} type="button" aria-pressed={selected} onClick={() => updateFilter("category", item.key)} className={`market-collection ${selected ? "selected" : ""}`}>
-              <span className="market-collection-image" style={{ backgroundColor: tints[index % tints.length] }}>{item.image ? <img key={item.image} src={item.image} alt="" loading="lazy" width={100} height={100} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} /> : <ShoppingBasket size={34} className="market-collection-placeholder" aria-hidden="true" />}{selected && <span className="market-collection-check"><Check size={12} aria-hidden="true" /></span>}</span>
+              <span className="market-collection-image" style={{ backgroundColor: tints[index % tints.length] }}>{item.image ? <img key={item.image} src={sizedImage(item.image, 200)} alt="" loading="lazy" width={100} height={100} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} /> : <ShoppingBasket size={34} className="market-collection-placeholder" aria-hidden="true" />}{selected && <span className="market-collection-check"><Check size={12} aria-hidden="true" /></span>}</span>
               <span className="market-collection-name">{item.name}<small>{item.count}</small></span>{item.caption && <span className="market-collection-caption">{item.caption}</span>}
             </motion.button>;
           })}

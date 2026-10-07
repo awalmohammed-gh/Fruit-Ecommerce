@@ -7,7 +7,8 @@ export interface CategoryInput { name: string; slug?: string; image: string; des
 type CategoryResponse = { category: StoreCategory; message?: string };
 
 export const categoriesApi = {
-  list: () => apiRequest<{ categories: StoreCategory[]; unlisted: UnlistedCategory[] }>("/categories"),
+  // Shared CDN copy for up to a minute; fresh skips it (the admin's own tab right after a change).
+  list: (fresh = false) => apiRequest<{ categories: StoreCategory[]; unlisted: UnlistedCategory[] }>(`/categories${fresh ? `?fresh=${Date.now()}` : ""}`),
   manage: () => apiRequest<{ categories: StoreCategory[]; unlisted: UnlistedCategory[] }>("/categories/manage"),
   create: (input: CategoryInput) => apiRequest<CategoryResponse>("/categories", { method: "POST", body: JSON.stringify(input) }),
   update: (id: string, input: Omit<CategoryInput, "slug">) =>

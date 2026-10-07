@@ -39,8 +39,12 @@ const schema = new mongoose.Schema({
   seoDescription: { type: String, trim: true, default: '', maxlength: 160 },
 }, { timestamps: true, toJSON: { versionKey: false } });
 
-schema.index({ category: 1, price: 1 });
-schema.index({ createdAt: -1 });
+// Each index matches a storefront query (controllers/productController.ts sorts):
+schema.index({ category: 1, price: 1 }); // a category sorted by price
+schema.index({ category: 1, createdAt: -1, _id: -1 }); // a category, newest first (the default)
+schema.index({ createdAt: -1 }); // all products, newest first; also the category cover pictures
+schema.index({ rating: -1, reviewCount: -1, _id: 1 }); // home page "Popular products", search results
+schema.index({ discount: -1, _id: 1 }); // Flash Deals: on sale, biggest discount first
 schema.index({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $type: 'string' } } });
 
 schema.pre('validate', function () {

@@ -15,7 +15,7 @@ const money = (value: number) => value.toLocaleString("en-GH", { style: "currenc
 const FlashDeals = () => {
   const [params, setParams] = useSearchParams();
   // Every in-stock product with a real price reduction, biggest discount first.
-  const offers = useResource("deals", () => productsApi.all({ onSale: true, stock: "in", sort: "discount" }));
+  const offers = useResource("deals", () => productsApi.all({ onSale: true, stock: "in", sort: "discount", view: "card" }));
   const { categories, nameOf } = useStoreCategories();
   const deals = offers.data ?? [];
   const departments = categories.filter((department) => deals.some((product) => product.category === department.slug));

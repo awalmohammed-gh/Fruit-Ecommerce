@@ -11,6 +11,8 @@ export interface ProductInput {
 export interface ProductQuery {
   q?: string; category?: string; stock?: StockFilter | ""; organic?: "true" | "false" | ""; minPrice?: string | number; maxPrice?: string | number;
   onSale?: boolean; sort?: string; page?: number; limit?: number; lowStockBelow?: number;
+  /** "card": only the fields a product card shows, for storefront lists. */
+  view?: "card";
 }
 export interface Pagination { page: number; limit: number; total: number; totalPages: number }
 export interface ProductStats {
@@ -38,13 +40,11 @@ export const productsApi = {
   update: (id: string, input: Partial<ProductInput>) =>
     apiRequest<ProductResponse>(`/products/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) }),
   remove: (id: string) => apiRequest<{ message: string }>(`/products/${encodeURIComponent(id)}`, { method: "DELETE" }),
-  // Walks every page; used for exports where the whole catalogue is needed.
+  // Every page; used for exports where the whole catalogue is needed. The first page says how many there are,
+  // then the rest load side by side rather than one after another.
   all: async (query: ProductQuery = {}) => {
-    const products: AdminProduct[] = [];
-    for (let page = 1; ; page++) {
-      const result = await productsApi.list({ ...query, page, limit: 48 });
-      products.push(...result.products);
-      if (page >= result.pagination.totalPages) return products;
-    }
+    const first = await productsApi.list({ ...query, page: 1, limit: 48 });
+    const rest = await Promise.all(Array.from({ length: first.pagination.totalPages - 1 }, (_, index) => productsApi.list({ ...query, page: index + 2, limit: 48 })));
+    return [first, ...rest].flatMap((result) => result.products);
   },
 };

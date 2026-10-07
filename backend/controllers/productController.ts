@@ -22,6 +22,10 @@ const sorts: Record<string, Record<string, SortOrder>> = {
 
 const DEFAULT_LOW_STOCK = 10;
 
+// ?view=card: only what a storefront product card shows (no description or search-engine fields).
+// Admin tables and the product page keep the full record.
+const CARD_FIELDS = "name slug category price originalPrice discount image unit stock isOrganic rating reviewCount";
+
 function validId(req: Request) {
   if (!mongoose.isObjectIdOrHexString(req.params.id))
     throw new HttpError(400, "Invalid product ID");
@@ -120,7 +124,7 @@ export const productController = {
         .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)
-        .select("-__v")
+        .select(param(req, "view") === "card" ? CARD_FIELDS : "-__v")
         .lean(),
       Product.countDocuments(filter),
     ]);

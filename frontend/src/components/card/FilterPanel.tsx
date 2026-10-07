@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { Check, Leaf, PackageCheck, ShoppingBasket } from "lucide-react";
 import type { Category } from "../../types";
+import { sizedImage } from "../../utils/links";
 
 interface FilterPanelProps {
   categories: Category[];
@@ -53,7 +54,7 @@ const FilterPanel = ({
             >
               {/* Categories without a picture yet (no products, no image) show a basket instead of an empty image. */}
               {item.image
-                ? <img src={item.image} alt="" loading="lazy" width={40} height={40} />
+                ? <img src={sizedImage(item.image, 80)} alt="" loading="lazy" width={40} height={40} />
                 : <ShoppingBasket size={22} className="market-collection-placeholder" aria-hidden="true" />}
               <span>{item.name}</span>
               {category === item.slug && <Check size={14} />}

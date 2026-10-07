@@ -1,4 +1,9 @@
 import { createRoot } from 'react-dom/client'
+// Fonts ship with the app (hashed, cached for a year) instead of a render-blocking Google Fonts @import.
+// Each subset (Latin, Latin Extended) is downloaded only when a page uses its characters (unicode-range).
+import '@fontsource-variable/outfit/wght.css'
+import '@fontsource/dm-serif-display/400.css'
+import '@fontsource/dm-serif-display/400-italic.css'
 import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'

@@ -58,8 +58,12 @@ export interface PublicContent {
 
 const json = (method: string, body: unknown) => ({ method, body: JSON.stringify(body) });
 
+// The CDN keeps a shared copy of the public content for up to a minute (backend middleware/cache.ts).
+// fresh: a one-off address the CDN hasn't stored, for the admin's own tab right after saving.
+const freshQuery = (fresh: boolean) => (fresh ? `?fresh=${Date.now()}` : "");
+
 export const contentApi = {
-  site: () => apiRequest<PublicContent>("/content"),
+  site: (fresh = false) => apiRequest<PublicContent>(`/content${freshQuery(fresh)}`),
 };
 
 export const contentAdminApi = {

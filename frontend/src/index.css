@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=DM+Serif+Display:ital@0;1&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -16,7 +15,8 @@
     --color-app-error: #ef4444;
     --color-app-warning: #f59e0b;
 
-    --font-sans: "Outfit", sans-serif;
+    /* Self-hosted (imported in main.tsx), so text never waits on another server; font-display: swap. */
+    --font-sans: "Outfit Variable", "Outfit", sans-serif;
     --font-serif: "DM Serif Display", serif;
 }
 

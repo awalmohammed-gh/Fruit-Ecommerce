@@ -9,7 +9,7 @@ import { useSiteContent } from "../../hooks/useSiteContent";
 
 // Best-rated products in stock; until anything has reviews this is simply the newest stock.
 const PopularProduct = () => {
-  const { data } = useResource("popular-products", () => productsApi.list({ sort: "rating", stock: "in", limit: 8 }));
+  const { data } = useResource("popular-products", () => productsApi.list({ sort: "rating", stock: "in", limit: 8, view: "card" }));
   const products = data?.products ?? [];
   // Heading wording from Admin → Settings → Homepage Content.
   const heading = useSiteContent().data?.sections.popular;

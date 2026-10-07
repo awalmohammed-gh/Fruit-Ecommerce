@@ -4,6 +4,7 @@ import ContentLink from "../common/ContentLink";
 import { ease, fadeUp, revealOnScroll, stagger } from "../common/motion";
 import { useSiteContent } from "../../hooks/useSiteContent";
 import type { Placement, StoreBanner } from "../../frontApisRoute/content";
+import { sizedImage } from "../../utils/links";
 
 type BannerContent = Pick<StoreBanner, "badge" | "title" | "highlight" | "description" | "image" | "buttonText" | "buttonLink">;
 
@@ -30,7 +31,7 @@ export const BannerCard = ({ banner }: { banner: BannerContent }) => (
           <div className="absolute size-48 sm:size-64 rounded-full bg-white/5" aria-hidden="true" />
           {/* The picture slides in with the section (outer), then idles with a slight bob (inner). */}
           <motion.div className="relative w-full max-w-64 sm:max-w-80" variants={{ hidden: { opacity: 0, x: 80 }, show: { opacity: 1, x: 0, transition: { duration: 0.9, ease, delay: 0.25 } } }}>
-            <motion.img src={banner.image} alt="" loading="lazy" decoding="async" className="w-full h-auto max-h-72 object-contain"
+            <motion.img src={sizedImage(banner.image, 640)} alt="" loading="lazy" decoding="async" className="w-full h-auto max-h-72 object-contain"
               animate={{ y: [0, -4, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut", delay: 1.2 }} />
           </motion.div>
         </div>

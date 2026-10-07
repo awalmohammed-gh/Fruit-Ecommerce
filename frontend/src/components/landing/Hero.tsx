@@ -29,6 +29,10 @@ export function HeroView({ slides, autoplaySeconds, preview = false, start = 0 }
   const [paused, setPaused] = useState(false);
   const [holding, setHolding] = useState(false);
   const swipeFrom = useRef<number | null>(null);
+  // The first picture is the page's largest element, so it gets the bandwidth to itself. The other slides'
+  // pictures start once it has arrived (well before the first change), so they still cross-fade smoothly.
+  const [othersReady, setOthersReady] = useState(preview || !slides[start]?.image);
+  const releaseOthers = () => setOthersReady(true);
 
   const count = slides.length;
   const current = Math.min(index, count - 1);
@@ -66,8 +70,9 @@ export function HeroView({ slides, autoplaySeconds, preview = false, start = 0 }
     >
       {/* Every slide's picture is stacked here and cross-fades, so changing slide never moves the layout. */}
       <motion.div className="absolute inset-0" initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease }} style={{ y: preview ? 0 : imageY }}>
-        {slides.map((item, position) => item.image && (
-          <img key={item._id ?? position} src={sizedImage(item.image, 1920)} alt="" fetchPriority={position === 0 ? "high" : "low"} decoding={position === 0 ? "sync" : "async"}
+        {slides.map((item, position) => item.image && (othersReady || position === current) && (
+          <img key={item._id ?? position} src={sizedImage(item.image, 1920)} alt="" fetchPriority={position === start ? "high" : "low"} decoding={position === start ? "sync" : "async"}
+            onLoad={othersReady ? undefined : releaseOthers} onError={othersReady ? undefined : releaseOthers}
             className={`absolute inset-0 h-full w-full object-cover object-[65%_center] lg:object-center transition-opacity duration-700 ${position === current ? "opacity-100" : "opacity-0"}`} />
         ))}
       </motion.div>

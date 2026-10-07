@@ -9,7 +9,7 @@ import { categoryPath } from "../../utils/links";
 import { useStoreCategories } from "../../hooks/useStoreCategories";
 
 const RelatedProduct = ({ category, excludeId }: { category: string; excludeId: string }) => {
-  const { data } = useResource(`related:${category}:${excludeId}`, () => productsApi.list({ category, sort: "rating", limit: 5 }));
+  const { data } = useResource(`related:${category}:${excludeId}`, () => productsApi.list({ category, sort: "rating", limit: 5, view: "card" }));
   const products = (data?.products ?? []).filter((product) => product._id !== excludeId).slice(0, 4);
   const isPublic = useStoreCategories().categories.some((item) => item.slug === category);
   if (!products.length) return null;

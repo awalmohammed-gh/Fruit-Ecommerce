@@ -27,7 +27,8 @@ const CartModal = () => {
     refresh,
   } = useCart();
   const navigate = useNavigate();
-  const { pricing, estimate } = usePricing();
+  // Only fetched once the cart is opened.
+  const { pricing, estimate } = usePricing(isCartOpen);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

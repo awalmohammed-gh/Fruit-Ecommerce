@@ -4,6 +4,7 @@ import Category from '../models/Category.js';
 import { siteContent } from '../services/content.js';
 import { pageMeta } from '../services/seo.js';
 import { HttpError } from '../middleware/errors.js';
+import { sharedCache } from '../middleware/cache.js';
 import type { AppConfig } from '../types.js';
 
 const escapeXml = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[char]!);
@@ -17,7 +18,9 @@ export function seoController(config: AppConfig) {
       const raw = typeof req.query.path === 'string' ? req.query.path : '';
       if (!raw.startsWith('/') || raw.startsWith('//') || raw.length > 600) throw new HttpError(400, 'path must be a page on this site, such as /products');
       const url = new URL(raw, 'http://storefront');
-      res.json(await pageMeta(decodeURIComponent(url.pathname), Object.fromEntries(url.searchParams), config.siteUrl));
+      const meta = await pageMeta(decodeURIComponent(url.pathname), Object.fromEntries(url.searchParams), config.siteUrl);
+      sharedCache(res, 300);
+      res.json(meta);
     },
 
     // Public, indexable pages only, built from the database on each request.

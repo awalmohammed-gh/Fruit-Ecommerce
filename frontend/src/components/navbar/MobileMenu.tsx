@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, NavLink, useLocation, useSearchParams } from "react-router-dom";
 import { useStoreCategories } from "../../hooks/useStoreCategories";
 import { navLinks } from "./navConfig";
+import { sizedImage } from "../../utils/links";
 
 interface MobileMenuProps {
   open: boolean;
@@ -12,6 +13,10 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ open, onClose, isAuthenticated }: MobileMenuProps) => {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  // The closed menu is only collapsed, so its pictures would otherwise download with every page.
+  // They load the first time the category list is shown.
+  const [opened, setOpened] = useState(false);
+  if (open && categoriesOpen && !opened) setOpened(true);
   const { categories } = useStoreCategories();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
@@ -71,7 +76,7 @@ const MobileMenu = ({ open, onClose, isAuthenticated }: MobileMenuProps) => {
                         : "text-zinc-500 hover:bg-green-50 hover:text-zinc-900"
                     }`}
                   >
-                    {cat.image ? <img src={cat.image} alt="" className="size-5 object-contain" /> : <ShoppingBasketIcon className="size-5 p-0.5 text-app-green/60" aria-hidden="true" />}
+                    {cat.image && opened ? <img src={sizedImage(cat.image, 40)} alt="" width={20} height={20} className="size-5 object-contain" /> : cat.image ? <span className="size-5" aria-hidden="true" /> : <ShoppingBasketIcon className="size-5 p-0.5 text-app-green/60" aria-hidden="true" />}
                     {cat.name}
                   </Link>
                 ))}

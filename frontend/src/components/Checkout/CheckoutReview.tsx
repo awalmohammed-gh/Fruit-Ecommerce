@@ -1,5 +1,6 @@
 import { CheckIcon, TruckIcon } from "lucide-react";
 import type { SavedAddress } from "../../frontApisRoute/addresses";
+import { sizedImage } from "../../utils/links";
 
 interface CheckoutReviewProps {
     address: SavedAddress;
@@ -33,7 +34,7 @@ export default function CheckoutReview({ address, items, handlePlaceOrder, loadi
             <div className="space-y-3 mb-5">
                 {items.map((item) => (
                     <div key={item.product._id} className="flex items-center gap-3">
-                        <img src={item.product.image} alt={item.product.name} className="size-12 rounded-lg object-cover" />
+                        <img src={sizedImage(item.product.image, 96)} alt={item.product.name} className="size-12 rounded-lg object-cover" />
                         <div className="flex-1">
                             <p className="text-sm font-medium text-app-green">{item.product.name}</p>
                             <p className="text-xs text-app-text-light">Qty: {item.quantity}</p>

@@ -84,7 +84,7 @@ const ProductDetails = ({ product, onReviewChanged }: { product: Product; onRevi
         {/* Info: each block fades up in reading order. */}
         <motion.div className="min-w-0" initial="hidden" animate="show" variants={stagger(0.07, 0.15)}>
           <MotionLink variants={fadeUp} to={categoryLink} className="inline-flex items-center gap-2 rounded-full bg-green-50 border border-app-green/10 pl-1 pr-3 py-1 text-xs font-semibold text-app-green hover:bg-app-green hover:text-white transition-colors">
-            {category?.image && <span className="size-6 rounded-full bg-white flex-center"><img src={category.image} alt="" className="size-4 object-contain" /></span>}
+            {category?.image && <span className="size-6 rounded-full bg-white flex-center"><img src={sizedImage(category.image, 32)} alt="" className="size-4 object-contain" /></span>}
             {categoryName}
           </MotionLink>
           <motion.h1 variants={fadeUp} className="font-serif text-3xl sm:text-4xl lg:text-5xl text-app-green leading-tight mt-4">{product.name}</motion.h1>

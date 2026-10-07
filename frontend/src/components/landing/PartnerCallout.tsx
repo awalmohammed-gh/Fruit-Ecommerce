@@ -4,6 +4,7 @@ import ContentLink from "../common/ContentLink";
 import { fadeUp, revealOnScroll, stagger } from "../common/motion";
 import { useSiteContent } from "../../hooks/useSiteContent";
 import type { Advert } from "../../frontApisRoute/content";
+import { sizedImage } from "../../utils/links";
 
 // Recruits delivery partners from the home page (the application lives at /delivery-partner/apply).
 // The wording is set in Admin → Settings → Advertisements; the admin preview renders the view with unsaved changes.
@@ -26,7 +27,7 @@ export const PartnerCalloutView = ({ ad }: { ad: Advert }) => (
         </div>
         {(ad.image || ad.ctaText) && (
           <motion.div variants={fadeUp} className="flex flex-col items-stretch md:items-end gap-4">
-            {ad.image && <img src={ad.image} alt="" loading="lazy" decoding="async" className="w-full max-w-56 h-auto max-h-48 object-contain self-center md:self-end" />}
+            {ad.image && <img src={sizedImage(ad.image, 450)} alt="" loading="lazy" decoding="async" className="w-full max-w-56 h-auto max-h-48 object-contain self-center md:self-end" />}
             {ad.ctaText && (
               <ContentLink to={ad.ctaLink}
                 className="w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 bg-app-green text-white font-semibold text-sm hover:bg-app-green-light hover:gap-3 shadow-lg group">

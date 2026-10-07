@@ -1,50 +1,69 @@
 import Toaster from "./components/toast/Toaster";
-import { Navigate, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
+import { Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { lazyPage, whenIdle } from "./utils/lazyPage";
+import Loading from "./components/card/Loading";
 import AppLayout from "./layout/AppLayout";
 import Home from "./pages/Home";
-import ProductPage from "./pages/ProductPage";
-import MyOrders from "./pages/MyOrders";
-import SearchResults from "./pages/SearchResults";
-import Checkout from "./pages/Checkout";
-import Cart from "./pages/Cart";
-import FlashDeals from "./pages/FlashDeals";
-import OrderTracking from "./pages/OrderTracking";
-import Addresses from "./pages/Addresses";
-import MyAccount from "./pages/MyAccount";
 import CustomerRoute from "./routes/CustomerRoute";
 import AdminRoute from "./routes/AdminRoute";
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminProducts from "./pages/admin/AdminProducts";
-import AdminProductForm from "./pages/admin/AdminProductForm";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminDeliveryPartners from "./pages/admin/AdminDeliveryPartners";
-import AdminDeliveryApplications from "./pages/admin/AdminDeliveryApplications";
-import AdminDeliveryAssignments from "./pages/admin/AdminDeliveryAssignments";
-import AdminCategories from "./pages/admin/AdminCategories";
-import AdminCustomers from "./pages/admin/AdminCustomers";
-import AdminInventory from "./pages/admin/AdminInventory";
-import AdminDeals from "./pages/admin/AdminDeals";
-import AdminRevenue from "./pages/admin/AdminRevenue";
-import AdminReports from "./pages/admin/AdminReports";
-import AdminSettings from "./pages/admin/AdminSettings";
-import Products from "./pages/Product";
-import DeliveryApply from "./pages/delivery/DeliveryApply";
-import DeliveryStatus from "./pages/delivery/DeliveryStatus";
-import DeliveryLogin from "./pages/delivery/DeliveryLogin";
-import DeliveryLayout from "./pages/delivery/DeliveryLayout";
-import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
-import DeliveryHistory from "./pages/delivery/DeliveryHistory";
-import DeliveryList from "./pages/delivery/DeliveryList";
-import DeliveryDetail from "./pages/delivery/DeliveryDetail";
-import DeliveryProfile from "./pages/delivery/DeliveryProfile";
 import NotFound from "./pages/NotFound";
 import SeoManager from "./components/seo/SeoManager";
 import FaviconManager from "./components/seo/FaviconManager";
 
+// Customer pages
+const Login = lazyPage(() => import("./pages/Login"));
+const ProductPage = lazyPage(() => import("./pages/ProductPage"));
+const MyOrders = lazyPage(() => import("./pages/MyOrders"));
+const SearchResults = lazyPage(() => import("./pages/SearchResults"));
+const Checkout = lazyPage(() => import("./pages/Checkout"));
+const Cart = lazyPage(() => import("./pages/Cart"));
+const FlashDeals = lazyPage(() => import("./pages/FlashDeals"));
+const OrderTracking = lazyPage(() => import("./pages/OrderTracking"));
+const Addresses = lazyPage(() => import("./pages/Addresses"));
+const MyAccount = lazyPage(() => import("./pages/MyAccount"));
+const Products = lazyPage(() => import("./pages/Product"));
+
+// Admin area
+const AdminLayout = lazyPage(() => import("./pages/admin/AdminLayout"));
+const AdminLogin = lazyPage(() => import("./pages/admin/AdminLogin"));
+const AdminDashboard = lazyPage(() => import("./pages/admin/AdminDashboard"));
+const AdminProducts = lazyPage(() => import("./pages/admin/AdminProducts"));
+const AdminProductForm = lazyPage(() => import("./pages/admin/AdminProductForm"));
+const AdminOrders = lazyPage(() => import("./pages/admin/AdminOrders"));
+const AdminDeliveryPartners = lazyPage(() => import("./pages/admin/AdminDeliveryPartners"));
+const AdminDeliveryApplications = lazyPage(() => import("./pages/admin/AdminDeliveryApplications"));
+const AdminDeliveryAssignments = lazyPage(() => import("./pages/admin/AdminDeliveryAssignments"));
+const AdminCategories = lazyPage(() => import("./pages/admin/AdminCategories"));
+const AdminCustomers = lazyPage(() => import("./pages/admin/AdminCustomers"));
+const AdminInventory = lazyPage(() => import("./pages/admin/AdminInventory"));
+const AdminDeals = lazyPage(() => import("./pages/admin/AdminDeals"));
+const AdminRevenue = lazyPage(() => import("./pages/admin/AdminRevenue"));
+const AdminReports = lazyPage(() => import("./pages/admin/AdminReports"));
+const AdminSettings = lazyPage(() => import("./pages/admin/AdminSettings"));
+
+// Delivery partner area
+const DeliveryApply = lazyPage(() => import("./pages/delivery/DeliveryApply"));
+const DeliveryStatus = lazyPage(() => import("./pages/delivery/DeliveryStatus"));
+const DeliveryLogin = lazyPage(() => import("./pages/delivery/DeliveryLogin"));
+const DeliveryLayout = lazyPage(() => import("./pages/delivery/DeliveryLayout"));
+const DeliveryDashboard = lazyPage(() => import("./pages/delivery/DeliveryDashboard"));
+const DeliveryHistory = lazyPage(() => import("./pages/delivery/DeliveryHistory"));
+const DeliveryList = lazyPage(() => import("./pages/delivery/DeliveryList"));
+const DeliveryDetail = lazyPage(() => import("./pages/delivery/DeliveryDetail"));
+const DeliveryProfile = lazyPage(() => import("./pages/delivery/DeliveryProfile"));
+
+// Only the store layout and the home page are in the first download; every other page's code (and the admin and
+// delivery partner areas, with their charts, editors and map library) loads when it's first visited.
+// Pages shoppers usually open next are fetched while the browser is idle, so moving on from the home page stays instant.
+const likelyNext = [Products, ProductPage, Cart, FlashDeals, SearchResults, Login];
+
 const App = () => {
+  const { pathname } = useLocation();
+  const storefront = !pathname.startsWith("/admin") && !pathname.startsWith("/delivery");
+  useEffect(() => {
+    if (storefront) whenIdle(() => likelyNext.forEach((page) => void page.preload().catch(() => {})));
+  }, [storefront]);
   return (
     <>
       {/* GreenFarm toasts for the whole app: customer, admin and delivery partner pages */}
@@ -54,6 +73,8 @@ const App = () => {
       {/* The favicon saved in Admin → Settings, on every page */}
       <FaviconManager />
 
+      {/* Pages outside the store layout (sign-in, admin and partner areas) while their code loads. */}
+      <Suspense fallback={<Loading fullScreen />}>
       <Routes>
         {/* Authentication no navbar and footer*/}
         <Route path="/login" element={<Login />} />
@@ -118,6 +139,7 @@ const App = () => {
         </Route>
         <Route path="/delivery/*" element={<Navigate to="/delivery-partner/login" replace />} />
       </Routes>
+      </Suspense>
     </>
   );
 };

@@ -8,6 +8,7 @@ import { HttpError } from "../middleware/errors.js";
 import { pricing } from "../config/pricing.js";
 import { orderLimits } from "../config/orderLimits.js";
 import { notifyOrder } from "../services/notifications.js";
+import { sharedCache } from "../middleware/cache.js";
 import { newDeliveryOtp, present, quoteCart, reserveStock, restoreStock, setStatus, transaction, withPartner } from "../services/orders.js";
 
 // Customers can cancel until someone has been sent to pack or deliver the order.
@@ -19,6 +20,8 @@ const placedWith = (userId: Types.ObjectId, checkoutKey: string | null) =>
 
 export const orderController = {
   pricing: async (_req: Request, res: Response) => {
+    // Fixed in config/pricing.ts; it only changes with a deployment.
+    sharedCache(res, 3600);
     res.json({ pricing, limits: { maxPerProduct: orderLimits.maxPerProduct } });
   },
   // Current prices and stock for a cart, before the customer commits.

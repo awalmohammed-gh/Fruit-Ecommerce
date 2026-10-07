@@ -10,7 +10,7 @@ const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") || "").trim();
   // Searches names and descriptions on the server; up to 48 matches.
-  const results = useResource(`search:${query}`, () => (query ? productsApi.list({ q: query, limit: 48, sort: "rating" }) : Promise.resolve(null)));
+  const results = useResource(`search:${query}`, () => (query ? productsApi.list({ q: query, limit: 48, sort: "rating", view: "card" }) : Promise.resolve(null)));
   const product: Product[] = results.data?.products ?? [];
   const loading = Boolean(query) && results.loading && !results.data;
 

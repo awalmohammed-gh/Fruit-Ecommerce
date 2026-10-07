@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ordersApi } from "../frontApisRoute/orders";
 import { useResource } from "./useResource";
 
@@ -12,9 +13,13 @@ const round = (value: number) => Math.round(value * 100) / 100;
 /**
  * Delivery and tax rules from the server, for showing estimates before checkout.
  * The order itself is always priced by the server.
+ * `needed` false: nothing is fetched yet (the cart drawer is mounted on every page but rarely open).
+ * Once fetched, the rules are shared for the rest of the visit.
  */
-export function usePricing() {
-  const { data } = useResource("pricing", loadPricing);
+export function usePricing(needed = true) {
+  const [wanted, setWanted] = useState(needed);
+  if (needed && !wanted) setWanted(true);
+  const { data } = useResource(wanted ? "pricing" : "pricing:later", () => (wanted ? loadPricing() : Promise.resolve(null)));
   const pricing = data?.pricing ?? null;
   const estimate = (subtotal: number) => {
     if (!pricing) return null;

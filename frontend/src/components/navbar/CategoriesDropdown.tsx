@@ -4,12 +4,17 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useStoreCategories } from "../../hooks/useStoreCategories";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { dropdownPanel } from "./navConfig";
+import { sizedImage } from "../../utils/links";
 
 const CategoriesDropdown = () => {
   const [open, setOpen] = useState(false);
   const { categories } = useStoreCategories();
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
+  // The closed menu is only hidden, so its pictures would otherwise download with every page, competing
+  // with the hero image. They load the first time the menu opens and stay for the closing animation.
+  const [opened, setOpened] = useState(false);
+  if (open && !opened) setOpened(true);
   useClickOutside(ref, close, open);
 
   const { pathname } = useLocation();
@@ -47,7 +52,7 @@ const CategoriesDropdown = () => {
             onClick={close}
             className={`dropdown-link ${activeSlug === cat.slug ? "text-app-green! font-medium bg-green-50" : ""}`}
           >
-            {cat.image ? <img src={cat.image} alt="" className="size-5 object-contain" /> : <ShoppingBasketIcon className="size-5 p-0.5 text-app-green/60" aria-hidden="true" />}
+            {cat.image && opened ? <img src={sizedImage(cat.image, 40)} alt="" width={20} height={20} className="size-5 object-contain" /> : cat.image ? <span className="size-5" aria-hidden="true" /> : <ShoppingBasketIcon className="size-5 p-0.5 text-app-green/60" aria-hidden="true" />}
             {cat.name}
           </Link>
         ))}

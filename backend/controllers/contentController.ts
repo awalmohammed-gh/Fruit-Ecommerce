@@ -4,6 +4,7 @@ import Banner from '../models/Banner.js';
 import { CONTENT_BLOCKS, type ContentBlock } from '../models/SiteContent.js';
 import * as validate from '../middleware/validateContent.js';
 import { HttpError } from '../middleware/errors.js';
+import { sharedCache } from '../middleware/cache.js';
 import { liveBanners, publicContent, siteContent } from '../services/content.js';
 
 const BLOCK_SAVED: Record<ContentBlock, string> = {
@@ -27,7 +28,10 @@ export const contentController = {
   site: async (_req: Request, res: Response) => {
     // Content first: on a fresh database reading it also creates the starting banner.
     const content = await siteContent();
-    res.json({ ...publicContent(content), banners: await liveBanners() });
+    const banners = await liveBanners();
+    // The same for every visitor; after an admin save the storefront asks again with a fresh URL (see the frontend).
+    sharedCache(res, 60);
+    res.json({ ...publicContent(content), banners });
   },
 
   // Admin → Settings: the full document, inactive parts included.

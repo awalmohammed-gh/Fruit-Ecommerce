@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ChevronRight, Leaf, Minus, Plus, ShoppingBasket, Trash2, Truck } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { productPath } from "../utils/links";
+import { productPath, sizedImage } from "../utils/links";
 import "./cart.css";
 import { maxQuantity } from "../utils/orderLimits";
 
@@ -28,7 +28,7 @@ const Cart = () => {
             {items.map(({ product, quantity }) => (
               <li key={product._id} className="basket-item-row">
                 <div className="flex gap-4 items-center min-w-0">
-                  <Link to={productPath(product)} aria-label={`View ${product.name}`} className="size-20 sm:size-24 shrink-0 rounded-xl bg-[#f3f2e8] p-2"><img src={product.image} alt="" width={96} height={96} className="w-full h-full object-contain" /></Link>
+                  <Link to={productPath(product)} aria-label={`View ${product.name}`} className="size-20 sm:size-24 shrink-0 rounded-xl bg-[#f3f2e8] p-2"><img src={sizedImage(product.image, 192)} alt="" width={96} height={96} className="w-full h-full object-contain" /></Link>
                   <div className="min-w-0"><Link to={productPath(product)} className="text-sm font-semibold hover:text-app-orange-dark"><h2>{product.name}</h2></Link><p className="text-xs text-app-text-light mt-1.5">{money(product.price)} / {product.unit}</p>
                     {product.isOrganic && <span className="inline-flex gap-1 items-center text-[10px] text-green-700 mt-2"><Leaf className="size-3" aria-hidden="true" />Organic</span>}
                     <button type="button" disabled={saving} onClick={() => removeFromCart(product._id)} aria-label={`Remove ${product.name} from cart`} className="flex items-center gap-1.5 text-xs text-app-text-light hover:text-red-700 mt-2"><Trash2 className="size-3.5" aria-hidden="true" />Remove</button>
